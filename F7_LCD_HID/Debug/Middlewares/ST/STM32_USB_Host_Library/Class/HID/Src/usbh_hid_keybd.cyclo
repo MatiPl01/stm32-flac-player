@@ -1,4 +1,0 @@
-usbh_hid_keybd.c:328:20:USBH_HID_KeybdInit	3
-usbh_hid_keybd.c:361:25:USBH_HID_GetKeybdInfo	2
-usbh_hid_keybd.c:379:27:USBH_HID_KeybdDecode	4
-usbh_hid_keybd.c:417:9:USBH_HID_GetASCIICode	3
