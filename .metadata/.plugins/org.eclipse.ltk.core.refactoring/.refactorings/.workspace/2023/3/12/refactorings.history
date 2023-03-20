@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Delete resource &apos;F7_LCD_HID_Audio_wav_player&apos;" deleteContents="false" description="Delete resource &apos;F7_LCD_HID_Audio_wav_player&apos;" element1="/F7_LCD_HID_Audio_wav_player" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1679328901797"/>
+</session>

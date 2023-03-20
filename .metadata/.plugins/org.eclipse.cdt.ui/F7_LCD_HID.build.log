@@ -1,0 +1,10 @@
+17:29:13 **** Incremental Build of configuration Debug for project F7_LCD_HID ****
+make -j6 all 
+arm-none-eabi-gcc -o "F7_LCD_HID.elf" @"objects.list"   -mcpu=cortex-m7 -T"D:\Repo\VI_sem\F7_LCD_HID_Audio_wav_player\F7_LCD_HID\STM32F746NGHX_FLASH.ld" --specs=nosys.specs -Wl,-Map="F7_LCD_HID.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+c:\st\stm32cubeide_1.12.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.200.202301161003\tools\arm-none-eabi\bin\ld.exe: c:/st/stm32cubeide_1.12.0/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.200.202301161003/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(lib_a-reent.o):(.bss.errno+0x0): multiple definition of `errno'; ./Middlewares/Third_Party/LwIP/system/OS/sys_arch.o:D:/Repo/VI_sem/F7_LCD_HID_Audio_wav_player/F7_LCD_HID/Debug/../Middlewares/Third_Party/LwIP/system/OS/sys_arch.c:45: first defined here
+collect2.exe: error: ld returned 1 exit status
+make: *** [makefile:101: F7_LCD_HID.elf] Error 1
+"make -j6 all" terminated with exit code 2. Build might be incomplete.
+
+17:29:16 Build Failed. 2 errors, 0 warnings. (took 2s.685ms)
+
