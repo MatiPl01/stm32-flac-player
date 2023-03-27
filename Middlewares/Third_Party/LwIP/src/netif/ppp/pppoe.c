@@ -33,7 +33,7 @@
 /* based on NetBSD: if_pppoe.c,v 1.64 2006/01/31 23:50:15 martin Exp */
 
 /*-
- * Copyright (c) 2002 The NetBSD Foundation, Inc.
+ * Copyright (c) 2002 The NetBSD Foundation, inc.
  * All rights reserved.
  *
  * This code is derived from software contributed to The NetBSD Foundation
@@ -50,7 +50,7 @@
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
  *        This product includes software developed by the NetBSD
- *        Foundation, Inc. and its contributors.
+ *        Foundation, inc. and its contributors.
  * 4. Neither the name of The NetBSD Foundation nor the names of its
  *    contributors may be used to endorse or promote products derived
  *    from this software without specific prior written permission.
@@ -116,7 +116,7 @@ LWIP_MEMPOOL_DECLARE(PPPOE_IF, MEMP_NUM_PPPOE_INTERFACES, sizeof(struct pppoe_so
 #define PPPOE_ERRORSTRING_LEN     64
 
 
-/* callbacks called from PPP core */
+/* callbacks called from PPP Core */
 static err_t pppoe_write(ppp_pcb *ppp, void *ctx, struct pbuf *p);
 static err_t pppoe_netif_output(ppp_pcb *ppp, void *ctx, struct pbuf *p, u_short protocol);
 static void pppoe_connect(ppp_pcb *ppp, void *ctx);
@@ -149,7 +149,7 @@ static struct pppoe_softc* pppoe_find_softc_by_hunique(u8_t *token, size_t len, 
 /** linked list of created pppoe interfaces */
 static struct pppoe_softc *pppoe_softc_list;
 
-/* Callbacks structure for PPP core */
+/* Callbacks structure for PPP Core */
 static const struct link_callbacks pppoe_callbacks = {
   pppoe_connect,
 #if PPP_SERVER
@@ -199,7 +199,7 @@ ppp_pcb *pppoe_create(struct netif *pppif,
   return ppp;
 }
 
-/* Called by PPP core */
+/* Called by PPP Core */
 static err_t pppoe_write(ppp_pcb *ppp, void *ctx, struct pbuf *p) {
   struct pppoe_softc *sc = (struct pppoe_softc *)ctx;
   struct pbuf *ph; /* Ethernet + PPPoE header */
@@ -241,7 +241,7 @@ static err_t pppoe_write(ppp_pcb *ppp, void *ctx, struct pbuf *p) {
   return ERR_OK;
 }
 
-/* Called by PPP core */
+/* Called by PPP Core */
 static err_t pppoe_netif_output(ppp_pcb *ppp, void *ctx, struct pbuf *p, u_short protocol) {
   struct pppoe_softc *sc = (struct pppoe_softc *)ctx;
   struct pbuf *pb;

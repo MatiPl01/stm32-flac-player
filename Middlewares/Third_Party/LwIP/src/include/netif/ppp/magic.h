@@ -45,7 +45,7 @@
 * randm.h - Random number generator header file.
 *
 * Copyright (c) 2003 by Marc Boucher, Services Informatiques (MBSI) inc.
-* Copyright (c) 1998 Global Election Systems Inc.
+* Copyright (c) 1998 Global Election Systems inc.
 *
 * The authors hereby grant permission to use, copy, modify, distribute,
 * and license this software and its documentation for any purpose, provided
@@ -70,7 +70,7 @@
 *
 * 03-01-01 Marc Boucher <marc@mbsi.ca>
 *   Ported to lwIP.
-* 98-05-29 Guy Lancaster <glanca@gesn.com>, Global Election Systems Inc.
+* 98-05-29 Guy Lancaster <glanca@gesn.com>, Global Election Systems inc.
 *   Extracted from avos.
 *****************************************************************************/
 

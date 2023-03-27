@@ -2,7 +2,7 @@
   ******************************************************************************
   * @file    usbh_core.c
   * @author  MCD Application Team
-  * @brief   This file implements the functions for the core state machine process
+  * @brief   This file implements the functions for the Core state machine process
   *          the enumeration and the control transfer process
   ******************************************************************************
   * @attention

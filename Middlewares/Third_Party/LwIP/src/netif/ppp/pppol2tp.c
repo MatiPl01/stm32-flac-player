@@ -69,7 +69,7 @@
 /* Memory pool */
 LWIP_MEMPOOL_DECLARE(PPPOL2TP_PCB, MEMP_NUM_PPPOL2TP_INTERFACES, sizeof(pppol2tp_pcb), "PPPOL2TP_PCB")
 
-/* callbacks called from PPP core */
+/* callbacks called from PPP Core */
 static err_t pppol2tp_write(ppp_pcb *ppp, void *ctx, struct pbuf *p);
 static err_t pppol2tp_netif_output(ppp_pcb *ppp, void *ctx, struct pbuf *p, u_short protocol);
 static err_t pppol2tp_destroy(ppp_pcb *ppp, void *ctx);    /* Destroy a L2TP control block */
@@ -90,7 +90,7 @@ static err_t pppol2tp_send_stopccn(pppol2tp_pcb *l2tp, u16_t ns);
 static err_t pppol2tp_xmit(pppol2tp_pcb *l2tp, struct pbuf *pb);
 static err_t pppol2tp_udp_send(pppol2tp_pcb *l2tp, struct pbuf *pb);
 
-/* Callbacks structure for PPP core */
+/* Callbacks structure for PPP Core */
 static const struct link_callbacks pppol2tp_callbacks = {
   pppol2tp_connect,
 #if PPP_SERVER
@@ -161,7 +161,7 @@ ipaddr_check_failed:
   return NULL;
 }
 
-/* Called by PPP core */
+/* Called by PPP Core */
 static err_t pppol2tp_write(ppp_pcb *ppp, void *ctx, struct pbuf *p) {
   pppol2tp_pcb *l2tp = (pppol2tp_pcb *)ctx;
   struct pbuf *ph; /* UDP + L2TP header */
@@ -200,7 +200,7 @@ static err_t pppol2tp_write(ppp_pcb *ppp, void *ctx, struct pbuf *p) {
   return ERR_OK;
 }
 
-/* Called by PPP core */
+/* Called by PPP Core */
 static err_t pppol2tp_netif_output(ppp_pcb *ppp, void *ctx, struct pbuf *p, u_short protocol) {
   pppol2tp_pcb *l2tp = (pppol2tp_pcb *)ctx;
   struct pbuf *pb;

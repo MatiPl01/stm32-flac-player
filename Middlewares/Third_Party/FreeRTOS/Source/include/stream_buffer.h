@@ -1,6 +1,6 @@
 /*
  * FreeRTOS Kernel V10.2.1
- * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * Copyright (C) 2019 Amazon.com, inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -28,7 +28,7 @@
 /*
  * Stream buffers are used to send a continuous stream of data from one task or
  * interrupt to another.  Their implementation is light weight, making them
- * particularly suited for interrupt to task and core to core communication
+ * particularly suited for interrupt to task and Core to Core communication
  * scenarios.
  *
  * ***NOTE***:  Uniquely among FreeRTOS objects, the stream buffer

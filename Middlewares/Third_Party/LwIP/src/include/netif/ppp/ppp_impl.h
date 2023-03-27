@@ -2,7 +2,7 @@
 * ppp.h - Network Point to Point Protocol header file.
 *
 * Copyright (c) 2003 by Marc Boucher, Services Informatiques (MBSI) inc.
-* portions Copyright (c) 1997 Global Election Systems Inc.
+* portions Copyright (c) 1997 Global Election Systems inc.
 *
 * The authors hereby grant permission to use, copy, modify, distribute,
 * and license this software and its documentation for any purpose, provided
@@ -27,7 +27,7 @@
 *
 * 03-01-01 Marc Boucher <marc@mbsi.ca>
 *   Ported to lwIP.
-* 97-11-05 Guy Lancaster <glanca@gesn.com>, Global Election Systems Inc.
+* 97-11-05 Guy Lancaster <glanca@gesn.com>, Global Election Systems inc.
 *   Original derived from BSD codes.
 *****************************************************************************/
 #ifndef LWIP_HDR_PPP_IMPL_H
@@ -153,7 +153,7 @@ struct link_callbacks {
   err_t (*free) (ppp_pcb *pcb, void *ctx);
   /* Write a pbuf to a ppp link, only used from PPP functions to send PPP packets. */
   err_t (*write)(ppp_pcb *pcb, void *ctx, struct pbuf *p);
-  /* Send a packet from lwIP core (IPv4 or IPv6) */
+  /* Send a packet from lwIP Core (IPv4 or IPv6) */
   err_t (*netif_output)(ppp_pcb *pcb, void *ctx, struct pbuf *p, u_short protocol);
   /* configure the transmit-side characteristics of the PPP interface */
   void (*send_config)(ppp_pcb *pcb, void *ctx, u32_t accm, int pcomp, int accomp);
@@ -384,7 +384,7 @@ struct pppd_stats {
 
  
 /*
- * Functions called from lwIP core.
+ * Functions called from lwIP Core.
  */
 
 /* initialize the PPP subsystem */

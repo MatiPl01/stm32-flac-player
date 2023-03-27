@@ -1,6 +1,6 @@
 /**
  * @file
- * SNMP core API for implementing MIBs
+ * SNMP Core API for implementing MIBs
  */
 
 /*

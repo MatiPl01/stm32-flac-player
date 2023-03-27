@@ -23,7 +23,6 @@
 #include "fatfs.h"
 #include "lwip.h"
 #include "usb_host.h"
-#include "usb_host.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -42,22 +41,7 @@
 #include "stm32746g_discovery_ts.h"
 #include "stm32746g_discovery_audio.h"
 
-
-/* USER CODE END Includes */
-
-/* Private typedef -----------------------------------------------------------*/
-/* USER CODE BEGIN PTD */
-
-/* USER CODE END PTD */
-
-/* Private define ------------------------------------------------------------*/
-/* USER CODE BEGIN PD */
-/* USER CODE END PD */
-
-/* Private macro -------------------------------------------------------------*/
-/* USER CODE BEGIN PM */
-
-/* USER CODE END PM */
+#include "../../Lib/player/Inc/controller.h"
 
 /* Private variables ---------------------------------------------------------*/
 ADC_HandleTypeDef hadc3;
@@ -108,9 +92,6 @@ UART_HandleTypeDef huart6;
 SDRAM_HandleTypeDef hsdram1;
 
 osThreadId defaultTaskHandle;
-/* USER CODE BEGIN PV */
-
-/* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
@@ -175,132 +156,28 @@ static void MX_TIM11_Init(void);
 
 void StartDefaultTask(void const *argument);
 
-/* USER CODE BEGIN PFP */
-static void lcd_start(void);
-
-int moveCursor(int xShift, int yShift);
-/* USER CODE END PFP */
-
-/* Private user code ---------------------------------------------------------*/
-/* USER CODE BEGIN 0 */
 #define LCD_LAYER_FG    1
 #define LCD_LAYER_BG    0
 #define LCD_X_SIZE      RK043FN48H_WIDTH
 #define LCD_Y_SIZE      RK043FN48H_HEIGHT
 static volatile uint32_t lcd_image_fg[LCD_Y_SIZE][LCD_X_SIZE] __attribute__((section(".sdram")));
 static volatile uint32_t lcd_image_bg[LCD_Y_SIZE][LCD_X_SIZE] __attribute__((section(".sdram")));
-static volatile uint16_t cursorX, cursorY;
-static volatile uint8_t cursorUpd = 0;
-static volatile uint8_t cursorPress = 0;
-const int CURSOR_MARGIN = 40;
 extern ApplicationTypeDef Appli_state;
 extern USBH_HandleTypeDef hUsbHostFS;
 extern char SDPath[4];   /* SD logical drive path */
 extern FATFS SDFatFS;    /* File system object for SD logical drive */
 extern FIL SDFile;       /* File object for SD */
 
-
-void USBH_HID_EventCallback(USBH_HandleTypeDef *phost) {
-    xprintf("hid callback: ");
-    HID_TypeTypeDef hiddev = USBH_HID_GetDeviceType(&hUsbHostFS);
-    switch (hiddev) {
-        case HID_MOUSE: {
-            xprintf("mouse\n");
-            HID_MOUSE_Info_TypeDef *pMouseInfo = USBH_HID_GetMouseInfo(phost);
-            if (pMouseInfo != NULL) {
-                if (pMouseInfo->x) {
-                    moveCursor((int8_t) pMouseInfo->x, 0);
-                }
-                if (pMouseInfo->y) {
-                    moveCursor(0, (int8_t) pMouseInfo->y);
-                    cursorUpd = 1;
-                }
-            }
-            break;
-        }
-        case HID_KEYBOARD: {
-            xprintf("keyboard\n");
-            HID_KEYBD_Info_TypeDef *pKeyboardInfo = USBH_HID_GetKeybdInfo(phost);
-            if (pKeyboardInfo != NULL) {
-                uint8_t ascii_code = USBH_HID_GetASCIICode(pKeyboardInfo);
-                xprintf(" key[0] is: %02X ", pKeyboardInfo->keys[0]);
-                xprintf(" ASCII code is %02X, char=%c", ascii_code, ascii_code);
-
-                switch (pKeyboardInfo->keys[0]) {
-                    case KEY_LEFTARROW:
-                        xprintf("(left)");
-                        moveCursor(-10, 0);
-                        break;
-                    case KEY_RIGHTARROW:
-                        xprintf("(right)");
-                        moveCursor(10, 0);
-                        break;
-                    case KEY_UPARROW:
-                        xprintf("(up)");
-                        moveCursor(0, -10);
-                        break;
-                    case KEY_DOWNARROW:
-                        xprintf("(down)");
-                        moveCursor(0, 10);
-                        break;
-                } //switch
-                xprintf("\n");
-            }
-
-            break;
-        }
-        case HID_UNKNOWN: {
-            xprintf("unknown\n");
-            break;
-        }
-    }
-
-}
-
-
-char inkey(void) {
-    uint32_t flags = huart1.Instance->ISR;
-
-    if ((flags & UART_FLAG_RXNE) || (flags & UART_FLAG_ORE)) {
-        __HAL_UART_CLEAR_OREFLAG(&huart1);
-        return (huart1.Instance->RDR);
-    } else
-        return 0;
-}
-
-/* can be activated in configuration */
-void ethernetif_notify_conn_changed(struct netif *netif) {
-    xprintf("callback: ethernetif_notify_conn_changed, netif->flags=%02X\n", netif->flags);
-}
-
-
-
-/* USER CODE END 0 */
-
 /**
   * @brief  The application entry point.
   * @retval int
   */
 int main(void) {
-    /* USER CODE BEGIN 1 */
-
-    /* USER CODE END 1 */
-
-    /* MCU Configuration--------------------------------------------------------*/
-
     /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
     HAL_Init();
 
-    /* USER CODE BEGIN Init */
-
-    /* USER CODE END Init */
-
     /* Configure the system clock */
     SystemClock_Config();
-
-    /* USER CODE BEGIN SysInit */
-
-    /* USER CODE END SysInit */
 
     /* Initialize all configured peripherals */
     MX_GPIO_Init();
@@ -333,51 +210,22 @@ int main(void) {
     MX_TIM7_Init();
     MX_TIM10_Init();
     MX_TIM11_Init();
-    /* USER CODE BEGIN 2 */
+
     debug_init(&huart1);
+
     xprintf(ANSI_FG_DEFAULT ANSI_BG_DEFAULT "\n\n" ANSI_BG_BLUE "STM32F746G-Disco says hello!" ANSI_BG_DEFAULT "\n");
-    printf("zwykly printf tez dziala :)\n");
-    lcd_start();
-//  MX_DriverVbusFS(0);
-    /* USER CODE END 2 */
-
-    /* USER CODE BEGIN RTOS_MUTEX */
-    /* add mutexes, ... */
-    /* USER CODE END RTOS_MUTEX */
-
-    /* USER CODE BEGIN RTOS_SEMAPHORES */
-    /* add semaphores, ... */
-    /* USER CODE END RTOS_SEMAPHORES */
-
-    /* USER CODE BEGIN RTOS_TIMERS */
-    /* start timers, add new ones, ... */
-    /* USER CODE END RTOS_TIMERS */
-
-    /* USER CODE BEGIN RTOS_QUEUES */
-    /* add queues, ... */
-    /* USER CODE END RTOS_QUEUES */
 
     /* Create the thread(s) */
     /* definition and creation of defaultTask */
     osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 4096);
     defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
-    /* USER CODE BEGIN RTOS_THREADS */
-    /* add threads, ... */
-    /* USER CODE END RTOS_THREADS */
-
     /* Start scheduler */
     osKernelStart();
 
     /* We should never get here as control is now taken by the scheduler */
     /* Infinite loop */
-    /* USER CODE BEGIN WHILE */
-    while (1) {
-        /* USER CODE END WHILE */
-
-        /* USER CODE BEGIN 3 */
-    }
-    /* USER CODE END 3 */
+    while (1) {}
 }
 
 /**
@@ -463,16 +311,8 @@ void SystemClock_Config(void) {
   * @retval None
   */
 static void MX_ADC3_Init(void) {
-
-    /* USER CODE BEGIN ADC3_Init 0 */
-
-    /* USER CODE END ADC3_Init 0 */
-
     ADC_ChannelConfTypeDef sConfig = {0};
 
-    /* USER CODE BEGIN ADC3_Init 1 */
-
-    /* USER CODE END ADC3_Init 1 */
     /** Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion)
     */
     hadc3.Instance = ADC3;
@@ -498,10 +338,6 @@ static void MX_ADC3_Init(void) {
     if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK) {
         Error_Handler();
     }
-    /* USER CODE BEGIN ADC3_Init 2 */
-
-    /* USER CODE END ADC3_Init 2 */
-
 }
 
 /**
@@ -510,14 +346,6 @@ static void MX_ADC3_Init(void) {
   * @retval None
   */
 static void MX_CRC_Init(void) {
-
-    /* USER CODE BEGIN CRC_Init 0 */
-
-    /* USER CODE END CRC_Init 0 */
-
-    /* USER CODE BEGIN CRC_Init 1 */
-
-    /* USER CODE END CRC_Init 1 */
     hcrc.Instance = CRC;
     hcrc.Init.DefaultPolynomialUse = DEFAULT_POLYNOMIAL_ENABLE;
     hcrc.Init.DefaultInitValueUse = DEFAULT_INIT_VALUE_ENABLE;
@@ -527,10 +355,6 @@ static void MX_CRC_Init(void) {
     if (HAL_CRC_Init(&hcrc) != HAL_OK) {
         Error_Handler();
     }
-    /* USER CODE BEGIN CRC_Init 2 */
-
-    /* USER CODE END CRC_Init 2 */
-
 }
 
 /**
@@ -539,14 +363,6 @@ static void MX_CRC_Init(void) {
   * @retval None
   */
 static void MX_DCMI_Init(void) {
-
-    /* USER CODE BEGIN DCMI_Init 0 */
-
-    /* USER CODE END DCMI_Init 0 */
-
-    /* USER CODE BEGIN DCMI_Init 1 */
-
-    /* USER CODE END DCMI_Init 1 */
     hdcmi.Instance = DCMI;
     hdcmi.Init.SynchroMode = DCMI_SYNCHRO_HARDWARE;
     hdcmi.Init.PCKPolarity = DCMI_PCKPOLARITY_FALLING;
@@ -562,10 +378,6 @@ static void MX_DCMI_Init(void) {
     if (HAL_DCMI_Init(&hdcmi) != HAL_OK) {
         Error_Handler();
     }
-    /* USER CODE BEGIN DCMI_Init 2 */
-
-    /* USER CODE END DCMI_Init 2 */
-
 }
 
 /**
@@ -574,14 +386,6 @@ static void MX_DCMI_Init(void) {
   * @retval None
   */
 static void MX_DMA2D_Init(void) {
-
-    /* USER CODE BEGIN DMA2D_Init 0 */
-
-    /* USER CODE END DMA2D_Init 0 */
-
-    /* USER CODE BEGIN DMA2D_Init 1 */
-
-    /* USER CODE END DMA2D_Init 1 */
     hdma2d.Instance = DMA2D;
     hdma2d.Init.Mode = DMA2D_M2M;
     hdma2d.Init.ColorMode = DMA2D_OUTPUT_ARGB8888;
@@ -596,10 +400,6 @@ static void MX_DMA2D_Init(void) {
     if (HAL_DMA2D_ConfigLayer(&hdma2d, 1) != HAL_OK) {
         Error_Handler();
     }
-    /* USER CODE BEGIN DMA2D_Init 2 */
-
-    /* USER CODE END DMA2D_Init 2 */
-
 }
 
 /**
@@ -608,14 +408,6 @@ static void MX_DMA2D_Init(void) {
   * @retval None
   */
 static void MX_I2C1_Init(void) {
-
-    /* USER CODE BEGIN I2C1_Init 0 */
-
-    /* USER CODE END I2C1_Init 0 */
-
-    /* USER CODE BEGIN I2C1_Init 1 */
-
-    /* USER CODE END I2C1_Init 1 */
     hi2c1.Instance = I2C1;
     hi2c1.Init.Timing = 0x00C0EAFF;
     hi2c1.Init.OwnAddress1 = 0;
@@ -638,10 +430,6 @@ static void MX_I2C1_Init(void) {
     if (HAL_I2CEx_ConfigDigitalFilter(&hi2c1, 0) != HAL_OK) {
         Error_Handler();
     }
-    /* USER CODE BEGIN I2C1_Init 2 */
-
-    /* USER CODE END I2C1_Init 2 */
-
 }
 
 /**
@@ -650,14 +438,6 @@ static void MX_I2C1_Init(void) {
   * @retval None
   */
 static void MX_I2C3_Init(void) {
-
-    /* USER CODE BEGIN I2C3_Init 0 */
-
-    /* USER CODE END I2C3_Init 0 */
-
-    /* USER CODE BEGIN I2C3_Init 1 */
-
-    /* USER CODE END I2C3_Init 1 */
     hi2c3.Instance = I2C3;
     hi2c3.Init.Timing = 0x00C0EAFF;
     hi2c3.Init.OwnAddress1 = 0;
@@ -680,10 +460,6 @@ static void MX_I2C3_Init(void) {
     if (HAL_I2CEx_ConfigDigitalFilter(&hi2c3, 0) != HAL_OK) {
         Error_Handler();
     }
-    /* USER CODE BEGIN I2C3_Init 2 */
-
-    /* USER CODE END I2C3_Init 2 */
-
 }
 
 /**
@@ -692,14 +468,6 @@ static void MX_I2C3_Init(void) {
   * @retval None
   */
 static void MX_IWDG_Init(void) {
-
-    /* USER CODE BEGIN IWDG_Init 0 */
-
-    /* USER CODE END IWDG_Init 0 */
-
-    /* USER CODE BEGIN IWDG_Init 1 */
-
-    /* USER CODE END IWDG_Init 1 */
     hiwdg.Instance = IWDG;
     hiwdg.Init.Prescaler = IWDG_PRESCALER_256;
     hiwdg.Init.Window = 4095;
@@ -707,10 +475,6 @@ static void MX_IWDG_Init(void) {
     if (HAL_IWDG_Init(&hiwdg) != HAL_OK) {
         Error_Handler();
     }
-    /* USER CODE BEGIN IWDG_Init 2 */
-
-    /* USER CODE END IWDG_Init 2 */
-
 }
 
 /**
@@ -719,16 +483,8 @@ static void MX_IWDG_Init(void) {
   * @retval None
   */
 static void MX_LTDC_Init(void) {
-
-    /* USER CODE BEGIN LTDC_Init 0 */
-
-    /* USER CODE END LTDC_Init 0 */
-
     LTDC_LayerCfgTypeDef pLayerCfg = {0};
 
-    /* USER CODE BEGIN LTDC_Init 1 */
-
-    /* USER CODE END LTDC_Init 1 */
     hltdc.Instance = LTDC;
     hltdc.Init.HSPolarity = LTDC_HSPOLARITY_AL;
     hltdc.Init.VSPolarity = LTDC_VSPOLARITY_AL;
@@ -766,10 +522,6 @@ static void MX_LTDC_Init(void) {
     if (HAL_LTDC_ConfigLayer(&hltdc, &pLayerCfg, 0) != HAL_OK) {
         Error_Handler();
     }
-    /* USER CODE BEGIN LTDC_Init 2 */
-
-    /* USER CODE END LTDC_Init 2 */
-
 }
 
 /**
@@ -778,14 +530,6 @@ static void MX_LTDC_Init(void) {
   * @retval None
   */
 static void MX_QUADSPI_Init(void) {
-
-    /* USER CODE BEGIN QUADSPI_Init 0 */
-
-    /* USER CODE END QUADSPI_Init 0 */
-
-    /* USER CODE BEGIN QUADSPI_Init 1 */
-
-    /* USER CODE END QUADSPI_Init 1 */
     /* QUADSPI parameter configuration*/
     hqspi.Instance = QUADSPI;
     hqspi.Init.ClockPrescaler = 1;
@@ -799,10 +543,6 @@ static void MX_QUADSPI_Init(void) {
     if (HAL_QSPI_Init(&hqspi) != HAL_OK) {
         Error_Handler();
     }
-    /* USER CODE BEGIN QUADSPI_Init 2 */
-
-    /* USER CODE END QUADSPI_Init 2 */
-
 }
 
 /**
@@ -811,22 +551,10 @@ static void MX_QUADSPI_Init(void) {
   * @retval None
   */
 static void MX_RNG_Init(void) {
-
-    /* USER CODE BEGIN RNG_Init 0 */
-
-    /* USER CODE END RNG_Init 0 */
-
-    /* USER CODE BEGIN RNG_Init 1 */
-
-    /* USER CODE END RNG_Init 1 */
     hrng.Instance = RNG;
     if (HAL_RNG_Init(&hrng) != HAL_OK) {
         Error_Handler();
     }
-    /* USER CODE BEGIN RNG_Init 2 */
-
-    /* USER CODE END RNG_Init 2 */
-
 }
 
 /**
@@ -835,18 +563,10 @@ static void MX_RNG_Init(void) {
   * @retval None
   */
 static void MX_RTC_Init(void) {
-
-    /* USER CODE BEGIN RTC_Init 0 */
-
-    /* USER CODE END RTC_Init 0 */
-
     RTC_TimeTypeDef sTime = {0};
     RTC_DateTypeDef sDate = {0};
     RTC_AlarmTypeDef sAlarm = {0};
 
-    /* USER CODE BEGIN RTC_Init 1 */
-
-    /* USER CODE END RTC_Init 1 */
     /** Initialize RTC Only
     */
     hrtc.Instance = RTC;
@@ -859,10 +579,6 @@ static void MX_RTC_Init(void) {
     if (HAL_RTC_Init(&hrtc) != HAL_OK) {
         Error_Handler();
     }
-
-    /* USER CODE BEGIN Check_RTC_BKUP */
-
-    /* USER CODE END Check_RTC_BKUP */
 
     /** Initialize RTC and set the Time and Date
     */
@@ -908,10 +624,6 @@ static void MX_RTC_Init(void) {
     if (HAL_RTCEx_SetTimeStamp(&hrtc, RTC_TIMESTAMPEDGE_RISING, RTC_TIMESTAMPPIN_POS1) != HAL_OK) {
         Error_Handler();
     }
-    /* USER CODE BEGIN RTC_Init 2 */
-
-    /* USER CODE END RTC_Init 2 */
-
 }
 
 /**
@@ -920,14 +632,6 @@ static void MX_RTC_Init(void) {
   * @retval None
   */
 static void MX_SAI2_Init(void) {
-
-    /* USER CODE BEGIN SAI2_Init 0 */
-
-    /* USER CODE END SAI2_Init 0 */
-
-    /* USER CODE BEGIN SAI2_Init 1 */
-
-    /* USER CODE END SAI2_Init 1 */
     hsai_BlockA2.Instance = SAI2_Block_A;
     hsai_BlockA2.Init.Protocol = SAI_FREE_PROTOCOL;
     hsai_BlockA2.Init.AudioMode = SAI_MODEMASTER_TX;
@@ -980,10 +684,6 @@ static void MX_SAI2_Init(void) {
     if (HAL_SAI_Init(&hsai_BlockB2) != HAL_OK) {
         Error_Handler();
     }
-    /* USER CODE BEGIN SAI2_Init 2 */
-
-    /* USER CODE END SAI2_Init 2 */
-
 }
 
 /**
@@ -992,14 +692,6 @@ static void MX_SAI2_Init(void) {
   * @retval None
   */
 static void MX_SDMMC1_SD_Init(void) {
-
-    /* USER CODE BEGIN SDMMC1_Init 0 */
-
-    /* USER CODE END SDMMC1_Init 0 */
-
-    /* USER CODE BEGIN SDMMC1_Init 1 */
-
-    /* USER CODE END SDMMC1_Init 1 */
     hsd1.Instance = SDMMC1;
     hsd1.Init.ClockEdge = SDMMC_CLOCK_EDGE_RISING;
     hsd1.Init.ClockBypass = SDMMC_CLOCK_BYPASS_DISABLE;
@@ -1007,10 +699,6 @@ static void MX_SDMMC1_SD_Init(void) {
     hsd1.Init.BusWide = SDMMC_BUS_WIDE_1B;
     hsd1.Init.HardwareFlowControl = SDMMC_HARDWARE_FLOW_CONTROL_DISABLE;
     hsd1.Init.ClockDiv = 0;
-    /* USER CODE BEGIN SDMMC1_Init 2 */
-
-    /* USER CODE END SDMMC1_Init 2 */
-
 }
 
 /**
@@ -1019,14 +707,6 @@ static void MX_SDMMC1_SD_Init(void) {
   * @retval None
   */
 static void MX_SPDIFRX_Init(void) {
-
-    /* USER CODE BEGIN SPDIFRX_Init 0 */
-
-    /* USER CODE END SPDIFRX_Init 0 */
-
-    /* USER CODE BEGIN SPDIFRX_Init 1 */
-
-    /* USER CODE END SPDIFRX_Init 1 */
     hspdif.Instance = SPDIFRX;
     hspdif.Init.InputSelection = SPDIFRX_INPUT_IN0;
     hspdif.Init.Retries = SPDIFRX_MAXRETRIES_NONE;
@@ -1041,10 +721,6 @@ static void MX_SPDIFRX_Init(void) {
     if (HAL_SPDIFRX_Init(&hspdif) != HAL_OK) {
         Error_Handler();
     }
-    /* USER CODE BEGIN SPDIFRX_Init 2 */
-
-    /* USER CODE END SPDIFRX_Init 2 */
-
 }
 
 /**
@@ -1053,14 +729,6 @@ static void MX_SPDIFRX_Init(void) {
   * @retval None
   */
 static void MX_SPI2_Init(void) {
-
-    /* USER CODE BEGIN SPI2_Init 0 */
-
-    /* USER CODE END SPI2_Init 0 */
-
-    /* USER CODE BEGIN SPI2_Init 1 */
-
-    /* USER CODE END SPI2_Init 1 */
     /* SPI2 parameter configuration*/
     hspi2.Instance = SPI2;
     hspi2.Init.Mode = SPI_MODE_MASTER;
@@ -1079,10 +747,6 @@ static void MX_SPI2_Init(void) {
     if (HAL_SPI_Init(&hspi2) != HAL_OK) {
         Error_Handler();
     }
-    /* USER CODE BEGIN SPI2_Init 2 */
-
-    /* USER CODE END SPI2_Init 2 */
-
 }
 
 /**
@@ -1091,19 +755,11 @@ static void MX_SPI2_Init(void) {
   * @retval None
   */
 static void MX_TIM1_Init(void) {
-
-    /* USER CODE BEGIN TIM1_Init 0 */
-
-    /* USER CODE END TIM1_Init 0 */
-
     TIM_ClockConfigTypeDef sClockSourceConfig = {0};
     TIM_MasterConfigTypeDef sMasterConfig = {0};
     TIM_OC_InitTypeDef sConfigOC = {0};
     TIM_BreakDeadTimeConfigTypeDef sBreakDeadTimeConfig = {0};
 
-    /* USER CODE BEGIN TIM1_Init 1 */
-
-    /* USER CODE END TIM1_Init 1 */
     htim1.Instance = TIM1;
     htim1.Init.Prescaler = 0;
     htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
@@ -1151,11 +807,8 @@ static void MX_TIM1_Init(void) {
     if (HAL_TIMEx_ConfigBreakDeadTime(&htim1, &sBreakDeadTimeConfig) != HAL_OK) {
         Error_Handler();
     }
-    /* USER CODE BEGIN TIM1_Init 2 */
 
-    /* USER CODE END TIM1_Init 2 */
     HAL_TIM_MspPostInit(&htim1);
-
 }
 
 /**
@@ -1164,18 +817,10 @@ static void MX_TIM1_Init(void) {
   * @retval None
   */
 static void MX_TIM2_Init(void) {
-
-    /* USER CODE BEGIN TIM2_Init 0 */
-
-    /* USER CODE END TIM2_Init 0 */
-
     TIM_ClockConfigTypeDef sClockSourceConfig = {0};
     TIM_MasterConfigTypeDef sMasterConfig = {0};
     TIM_OC_InitTypeDef sConfigOC = {0};
 
-    /* USER CODE BEGIN TIM2_Init 1 */
-
-    /* USER CODE END TIM2_Init 1 */
     htim2.Instance = TIM2;
     htim2.Init.Prescaler = 0;
     htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
@@ -1204,11 +849,8 @@ static void MX_TIM2_Init(void) {
     if (HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_1) != HAL_OK) {
         Error_Handler();
     }
-    /* USER CODE BEGIN TIM2_Init 2 */
 
-    /* USER CODE END TIM2_Init 2 */
     HAL_TIM_MspPostInit(&htim2);
-
 }
 
 /**
@@ -1217,18 +859,10 @@ static void MX_TIM2_Init(void) {
   * @retval None
   */
 static void MX_TIM3_Init(void) {
-
-    /* USER CODE BEGIN TIM3_Init 0 */
-
-    /* USER CODE END TIM3_Init 0 */
-
     TIM_ClockConfigTypeDef sClockSourceConfig = {0};
     TIM_MasterConfigTypeDef sMasterConfig = {0};
     TIM_OC_InitTypeDef sConfigOC = {0};
 
-    /* USER CODE BEGIN TIM3_Init 1 */
-
-    /* USER CODE END TIM3_Init 1 */
     htim3.Instance = TIM3;
     htim3.Init.Prescaler = 0;
     htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
@@ -1257,11 +891,8 @@ static void MX_TIM3_Init(void) {
     if (HAL_TIM_PWM_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_1) != HAL_OK) {
         Error_Handler();
     }
-    /* USER CODE BEGIN TIM3_Init 2 */
 
-    /* USER CODE END TIM3_Init 2 */
     HAL_TIM_MspPostInit(&htim3);
-
 }
 
 /**
@@ -1270,17 +901,9 @@ static void MX_TIM3_Init(void) {
   * @retval None
   */
 static void MX_TIM5_Init(void) {
-
-    /* USER CODE BEGIN TIM5_Init 0 */
-
-    /* USER CODE END TIM5_Init 0 */
-
     TIM_ClockConfigTypeDef sClockSourceConfig = {0};
     TIM_MasterConfigTypeDef sMasterConfig = {0};
 
-    /* USER CODE BEGIN TIM5_Init 1 */
-
-    /* USER CODE END TIM5_Init 1 */
     htim5.Instance = TIM5;
     htim5.Init.Prescaler = 0;
     htim5.Init.CounterMode = TIM_COUNTERMODE_UP;
@@ -1299,10 +922,6 @@ static void MX_TIM5_Init(void) {
     if (HAL_TIMEx_MasterConfigSynchronization(&htim5, &sMasterConfig) != HAL_OK) {
         Error_Handler();
     }
-    /* USER CODE BEGIN TIM5_Init 2 */
-
-    /* USER CODE END TIM5_Init 2 */
-
 }
 
 /**
@@ -1311,16 +930,8 @@ static void MX_TIM5_Init(void) {
   * @retval None
   */
 static void MX_TIM7_Init(void) {
-
-    /* USER CODE BEGIN TIM7_Init 0 */
-
-    /* USER CODE END TIM7_Init 0 */
-
     TIM_MasterConfigTypeDef sMasterConfig = {0};
 
-    /* USER CODE BEGIN TIM7_Init 1 */
-
-    /* USER CODE END TIM7_Init 1 */
     htim7.Instance = TIM7;
     htim7.Init.Prescaler = 0;
     htim7.Init.CounterMode = TIM_COUNTERMODE_UP;
@@ -1334,10 +945,6 @@ static void MX_TIM7_Init(void) {
     if (HAL_TIMEx_MasterConfigSynchronization(&htim7, &sMasterConfig) != HAL_OK) {
         Error_Handler();
     }
-    /* USER CODE BEGIN TIM7_Init 2 */
-
-    /* USER CODE END TIM7_Init 2 */
-
 }
 
 /**
@@ -1346,17 +953,9 @@ static void MX_TIM7_Init(void) {
   * @retval None
   */
 static void MX_TIM8_Init(void) {
-
-    /* USER CODE BEGIN TIM8_Init 0 */
-
-    /* USER CODE END TIM8_Init 0 */
-
     TIM_ClockConfigTypeDef sClockSourceConfig = {0};
     TIM_MasterConfigTypeDef sMasterConfig = {0};
 
-    /* USER CODE BEGIN TIM8_Init 1 */
-
-    /* USER CODE END TIM8_Init 1 */
     htim8.Instance = TIM8;
     htim8.Init.Prescaler = 0;
     htim8.Init.CounterMode = TIM_COUNTERMODE_UP;
@@ -1377,10 +976,6 @@ static void MX_TIM8_Init(void) {
     if (HAL_TIMEx_MasterConfigSynchronization(&htim8, &sMasterConfig) != HAL_OK) {
         Error_Handler();
     }
-    /* USER CODE BEGIN TIM8_Init 2 */
-
-    /* USER CODE END TIM8_Init 2 */
-
 }
 
 /**
@@ -1389,14 +984,6 @@ static void MX_TIM8_Init(void) {
   * @retval None
   */
 static void MX_TIM10_Init(void) {
-
-    /* USER CODE BEGIN TIM10_Init 0 */
-
-    /* USER CODE END TIM10_Init 0 */
-
-    /* USER CODE BEGIN TIM10_Init 1 */
-
-    /* USER CODE END TIM10_Init 1 */
     htim10.Instance = TIM10;
     htim10.Init.Prescaler = 0;
     htim10.Init.CounterMode = TIM_COUNTERMODE_UP;
@@ -1406,10 +993,6 @@ static void MX_TIM10_Init(void) {
     if (HAL_TIM_Base_Init(&htim10) != HAL_OK) {
         Error_Handler();
     }
-    /* USER CODE BEGIN TIM10_Init 2 */
-
-    /* USER CODE END TIM10_Init 2 */
-
 }
 
 /**
@@ -1418,14 +1001,6 @@ static void MX_TIM10_Init(void) {
   * @retval None
   */
 static void MX_TIM11_Init(void) {
-
-    /* USER CODE BEGIN TIM11_Init 0 */
-
-    /* USER CODE END TIM11_Init 0 */
-
-    /* USER CODE BEGIN TIM11_Init 1 */
-
-    /* USER CODE END TIM11_Init 1 */
     htim11.Instance = TIM11;
     htim11.Init.Prescaler = 0;
     htim11.Init.CounterMode = TIM_COUNTERMODE_UP;
@@ -1435,10 +1010,6 @@ static void MX_TIM11_Init(void) {
     if (HAL_TIM_Base_Init(&htim11) != HAL_OK) {
         Error_Handler();
     }
-    /* USER CODE BEGIN TIM11_Init 2 */
-
-    /* USER CODE END TIM11_Init 2 */
-
 }
 
 /**
@@ -1447,16 +1018,8 @@ static void MX_TIM11_Init(void) {
   * @retval None
   */
 static void MX_TIM12_Init(void) {
-
-    /* USER CODE BEGIN TIM12_Init 0 */
-
-    /* USER CODE END TIM12_Init 0 */
-
     TIM_OC_InitTypeDef sConfigOC = {0};
 
-    /* USER CODE BEGIN TIM12_Init 1 */
-
-    /* USER CODE END TIM12_Init 1 */
     htim12.Instance = TIM12;
     htim12.Init.Prescaler = 0;
     htim12.Init.CounterMode = TIM_COUNTERMODE_UP;
@@ -1473,11 +1036,8 @@ static void MX_TIM12_Init(void) {
     if (HAL_TIM_PWM_ConfigChannel(&htim12, &sConfigOC, TIM_CHANNEL_1) != HAL_OK) {
         Error_Handler();
     }
-    /* USER CODE BEGIN TIM12_Init 2 */
 
-    /* USER CODE END TIM12_Init 2 */
     HAL_TIM_MspPostInit(&htim12);
-
 }
 
 /**
@@ -1486,14 +1046,6 @@ static void MX_TIM12_Init(void) {
   * @retval None
   */
 static void MX_USART1_UART_Init(void) {
-
-    /* USER CODE BEGIN USART1_Init 0 */
-
-    /* USER CODE END USART1_Init 0 */
-
-    /* USER CODE BEGIN USART1_Init 1 */
-
-    /* USER CODE END USART1_Init 1 */
     huart1.Instance = USART1;
     huart1.Init.BaudRate = 115200;
     huart1.Init.WordLength = UART_WORDLENGTH_8B;
@@ -1507,10 +1059,6 @@ static void MX_USART1_UART_Init(void) {
     if (HAL_UART_Init(&huart1) != HAL_OK) {
         Error_Handler();
     }
-    /* USER CODE BEGIN USART1_Init 2 */
-
-    /* USER CODE END USART1_Init 2 */
-
 }
 
 /**
@@ -1519,14 +1067,6 @@ static void MX_USART1_UART_Init(void) {
   * @retval None
   */
 static void MX_USART6_UART_Init(void) {
-
-    /* USER CODE BEGIN USART6_Init 0 */
-
-    /* USER CODE END USART6_Init 0 */
-
-    /* USER CODE BEGIN USART6_Init 1 */
-
-    /* USER CODE END USART6_Init 1 */
     huart6.Instance = USART6;
     huart6.Init.BaudRate = 19200;
     huart6.Init.WordLength = UART_WORDLENGTH_8B;
@@ -1540,17 +1080,12 @@ static void MX_USART6_UART_Init(void) {
     if (HAL_UART_Init(&huart6) != HAL_OK) {
         Error_Handler();
     }
-    /* USER CODE BEGIN USART6_Init 2 */
-
-    /* USER CODE END USART6_Init 2 */
-
 }
 
 /**
   * Enable DMA controller clock
   */
 static void MX_DMA_Init(void) {
-
     /* DMA controller clock enable */
     __HAL_RCC_DMA2_CLK_ENABLE();
 
@@ -1561,21 +1096,11 @@ static void MX_DMA_Init(void) {
     /* DMA2_Stream6_IRQn interrupt configuration */
     HAL_NVIC_SetPriority(DMA2_Stream6_IRQn, 5, 0);
     HAL_NVIC_EnableIRQ(DMA2_Stream6_IRQn);
-
 }
 
 /* FMC initialization function */
 static void MX_FMC_Init(void) {
-
-    /* USER CODE BEGIN FMC_Init 0 */
-
-    /* USER CODE END FMC_Init 0 */
-
     FMC_SDRAM_TimingTypeDef SdramTiming = {0};
-
-    /* USER CODE BEGIN FMC_Init 1 */
-
-    /* USER CODE END FMC_Init 1 */
 
     /** Perform the SDRAM1 memory initialization sequence
     */
@@ -1603,10 +1128,6 @@ static void MX_FMC_Init(void) {
     if (HAL_SDRAM_Init(&hsdram1, &SdramTiming) != HAL_OK) {
         Error_Handler();
     }
-
-    /* USER CODE BEGIN FMC_Init 2 */
-
-    /* USER CODE END FMC_Init 2 */
 }
 
 /**
@@ -1771,12 +1292,9 @@ static void MX_GPIO_Init(void) {
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     GPIO_InitStruct.Alternate = GPIO_AF10_OTG_HS;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
 }
 
-/* USER CODE BEGIN 4 */
-
-#define AUDIO_OUT_BUFFER_SIZE                      8192
+#define AUDIO_OUT_BUFFER_SIZE 8192
 enum {
     BUFFER_OFFSET_NONE = 0,
     BUFFER_OFFSET_HALF,
@@ -1805,14 +1323,6 @@ static uint32_t fpos = 0;
 static char fileListBuf[FILE_LIST_MAX_LEN][FILE_NAME_LEN];
 static int currentItemToPlay = 0;
 static int playListLen = 0;
-
-
-
-
-/*
-fragmenty kodu dla serwera WWW
-opracowano na podstawie dostepnych przykladow
-*/
 
 #if !CFG_DISABLE_LWIP
 /* Defined in lwip.c */
@@ -1949,58 +1459,7 @@ void draw_background(void) {
     BSP_LCD_Clear(LCD_COLOR_WHITE);
 
     BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
-
 }
-
-int moveCursor(int xShift, int yShift) {
-    int newPos_X = cursorX + xShift;
-
-    //trim X position to safe area if necessary
-    if (newPos_X >= (LCD_X_SIZE - CURSOR_MARGIN - 2)) newPos_X = LCD_X_SIZE - CURSOR_MARGIN - 1;
-    cursorX = newPos_X;
-
-    int newPos_Y = cursorY + yShift;
-
-    //trim Y position to safe area if necessary
-    if (newPos_Y >= (LCD_Y_SIZE - CURSOR_MARGIN - 2)) newPos_Y = LCD_Y_SIZE - CURSOR_MARGIN - 1;
-    cursorY = newPos_Y;
-
-    cursorUpd = 1;
-
-    return 0;
-}
-
-
-void putcursor(void) {
-    if (cursorUpd) {
-        const int SIZE = 40;
-
-        if (cursorX <= SIZE) cursorX = SIZE + 1;
-        if (cursorX >= (LCD_X_SIZE - SIZE - 1)) cursorX = LCD_X_SIZE - SIZE - 1;
-        if (cursorY <= SIZE) cursorY = SIZE + 1;
-        if (cursorY >= (LCD_Y_SIZE - SIZE - 1)) cursorY = LCD_Y_SIZE - SIZE - 1;
-
-        BSP_LCD_SelectLayer(LCD_LAYER_FG);
-        BSP_LCD_Clear(LCD_COLOR_WHITE);
-        BSP_LCD_SetTextColor(LCD_COLOR_GREEN);
-        BSP_LCD_FillCircle(cursorX, cursorY, SIZE);
-
-        cursorUpd = 0;
-    }
-}
-
-void cursorPressAction(void) {
-    if (cursorPress) {
-        xprintf("cursor pressed at X=%03d, Y=%03d\n", cursorX, cursorY);
-
-        //start performing a sample action
-        //...your code here :)
-        //end of the sample action
-
-        cursorPress = 0;
-    }
-}
-
 
 void BSP_AUDIO_OUT_TransferComplete_CallBack(void) {
     buf_offs = BUFFER_OFFSET_FULL;
@@ -2145,7 +1604,6 @@ int serialTestComm(char key) {
             break;
         }
 
-
         case 'l': {
             playListLen =
                     ListFilesInCurrentDir("", FILE_LIST_MAX_LEN, FILE_NAME_LEN);
@@ -2162,84 +1620,6 @@ int serialTestComm(char key) {
             }
             break;
         }
-
-
-        case 'w':
-            moveCursor(0, -CURSOR_MOVE_STEP);
-            putcursor();
-            break;
-        case 's':
-            moveCursor(0, CURSOR_MOVE_STEP);
-            putcursor();
-            break;
-        case 'a':
-            moveCursor(-CURSOR_MOVE_STEP, 0);
-            putcursor();
-            break;
-        case 'd':
-            moveCursor(CURSOR_MOVE_STEP, 0);
-            putcursor();
-            break;
-        case ' ':
-            cursorPress = 1;
-            putcursor();
-            cursorPressAction();
-            break;
-
-        case 'W': {
-            xprintf("write-append test\n");
-            FRESULT res;
-            UINT bw;
-            FIL file;
-            const int TEXTBUF_SIZE = 128;
-            char text[TEXTBUF_SIZE];
-            sprintf(text, "Linia tekstu. Czas systemowy to: %08d\n", (int) xTaskGetTickCount());
-            xprintf("f_open... ");
-            res = f_open(&file, "0:/test.txt", FA_WRITE | FA_OPEN_APPEND);
-            xprintf("res=%d\n", res);
-            if (res) break;
-            xprintf("f_write... ");
-            res = f_write(&file, text, strlen(text), &bw);
-            xprintf("res=%d, bw=%d\n", res, bw);
-            f_close(&file);
-            break;
-        }
-
-        case 'R': //read and disp in text-only mode
-        case 'H': //read and disp in text-hex mode
-        {
-            xprintf("read test!\n");
-            FIL file;
-            FRESULT res = f_open(&file, "0:/test.txt", FA_READ);
-            xprintf("f_open res=%d\n", res);
-            if (res) break;
-
-            const uint32_t BUF_SIZE = 64;
-            char buf[BUF_SIZE];
-            int dispSizeLimit = 4 * 1024;
-
-            UINT br;
-            xprintf(ANSI_FG_YELLOW "File contents:" ANSI_FG_DEFAULT "\n");
-            do {
-                xprintf("\n" ANSI_FG_YELLOW "f_read...");
-                res = f_read(&file, buf, BUF_SIZE, &br);
-                xprintf("f_read res=%d" ANSI_FG_DEFAULT "\n", res);
-
-                if ((res == FR_OK) && (br)) {
-                    if (key == 'H') {
-                        debug_dump(buf, br);
-                    } else {
-                        debug_txt_limit(buf, br);
-                    }
-                    dispSizeLimit -= br;
-                } else {
-                    break;
-                }
-            } while ((br > 0) && (dispSizeLimit > 0));
-            f_close(&file);
-            break;
-        }
-
 
         case 'c': {
             switch (player_state) {
@@ -2286,11 +1666,8 @@ int serialTestComm(char key) {
                 }
 
             }
-
             break;
-        } //case 'x':
-
-
+        }
 
         case 'z': {
             PlayPreviousItem();
@@ -2303,7 +1680,6 @@ int serialTestComm(char key) {
             RedrawList();
             break;
         }
-
 
         case 'v': {
             xprintf("stop command\n");
@@ -2321,10 +1697,8 @@ int serialTestComm(char key) {
                     RedrawList();
                     break;
             }
-
             break;
         }
-
 
         default: {
             xprintf("not supported command: %c\n", key);
@@ -2340,10 +1714,8 @@ void handlePlayer(void) {
         case PLAYER_STATE_STOPPED:
         case PLAYER_STATE_PAUSED:
         case PLAYER_STATE_EOF: {
-            //no action
             break;
         }
-
 
         case PLAYER_STATE_PLAYING: {
             uint32_t br;
@@ -2358,7 +1730,6 @@ void handlePlayer(void) {
                 }
                 buf_offs = BUFFER_OFFSET_NONE;
                 fpos += br;
-
             }
 
             if (buf_offs == BUFFER_OFFSET_FULL) {
@@ -2380,10 +1751,9 @@ void handlePlayer(void) {
                 playerStop();
                 PlayNextItem();
             }
-        } //case PLAYER_STATE_PLAYING:
-    }   //switch(player_state)
+        }
+    }
 }
-
 
 void RedrawList(void) {
     const int PLAYLIST_DISP_LINES = 10;
@@ -2395,10 +1765,8 @@ void RedrawList(void) {
     int itemToDisp = 0;
 
     for (int line = 0; line < PLAYLIST_DISP_LINES; line++) {
-        //xprintf("proc line: %d ",line);
         BSP_LCD_ClearStringLine(line);
         if (itemToDisp < playListLen) {
-            //xprintf("- disp\n");
             if (itemToDisp == currentItemToPlay) BSP_LCD_SetBackColor(LCD_COLOR_GRAY);
             BSP_LCD_DisplayStringAtLine(line, (uint8_t *) &fileListBuf[itemToDisp][0]);
             BSP_LCD_SetBackColor(LCD_COLOR_WHITE);
@@ -2407,25 +1775,13 @@ void RedrawList(void) {
             //xprintf("- -\n");
         }
     }
-
-//  BSP_LCD_ClearStringLine
-
-
-
 }
 
-
-
-
-/* USER CODE END 4 */
-
-/* USER CODE BEGIN Header_StartDefaultTask */
 /**
   * @brief  Function implementing the defaultTask thread.
   * @param  argument: Not used
   * @retval None
   */
-/* USER CODE END Header_StartDefaultTask */
 void StartDefaultTask(void const *argument) {
     /* init code for LWIP */
     MX_LWIP_Init();
@@ -2440,92 +1796,67 @@ void StartDefaultTask(void const *argument) {
     vTaskDelay(800);
     lcd_start();
 
-    draw_background();
+    controller_task();
 
-    uint8_t status = BSP_TS_Init(LCD_X_SIZE, LCD_Y_SIZE);
-    if (status != TS_OK)
-        xprintf("TS init error\n");
-
-    xprintf("initializing audio codec...\n");
-    if (BSP_AUDIO_OUT_Init(OUTPUT_DEVICE_HEADPHONE1, 60, AUDIO_FREQUENCY_44K) == 0) {
-        xprintf("audio init OK\n");
-    } else {
-        xprintf("audio init ERROR\n");
-    }
-    BSP_AUDIO_OUT_SetAudioFrameSlot(CODEC_AUDIOFRAME_SLOT_02);
-
-
-#if !CFG_DISABLE_LWIP
-    xprintf("Obtaining address with DHCP...\n");
-
-    struct dhcp *dhcp = netif_dhcp_data(&gnetif);
-      do
-      {
-        xprintf("dhcp->state = %02X\n",dhcp->state);
-        vTaskDelay(250);
-      }while(dhcp->state != 0x0A);
-
-      xprintf("DHCP bound\n");
-      displayOwnIp();
-
-      osThreadDef(
-         netconn_thread, http_server_netconn_thread, osPriorityNormal, 0, 1024);
-      osThreadCreate(osThread(netconn_thread), NULL);
-#endif
-    static ApplicationTypeDef previousAppli_state;
-
-    /* Infinite loop */
-    for (;;) {
-        HAL_IWDG_Refresh(&hiwdg);
-        vTaskDelay(5);
-        LD1_TOGGLE; /* Just blink to say "I'm alive" */
-
-        //a recommended line to read the touch screen :)
-        TS_StateTypeDef TS_State;
-        BSP_TS_GetState(&TS_State);
-        if (TS_State.touchDetected) {
-            cursorX = TS_State.touchX[0];
-            cursorY = TS_State.touchY[0];
-            cursorUpd = 1;
-        }
-        putcursor();
-
-        char key = debug_inkey();
-        serialTestComm(key);
-
-        handlePlayer();
-
-
-        if (previousAppli_state != Appli_state) {
-
-            if (Appli_state == APPLICATION_READY) {
-                HID_TypeTypeDef hiddev = USBH_HID_GetDeviceType(&hUsbHostFS);
-                xprintf("Appli_state is now APPLICATION_READY, detected device: ");
-                switch (hiddev) {
-                    case HID_MOUSE: {
-                        xprintf("mouse\n");
-                        USBH_HID_MouseInit(&hUsbHostFS);
-                        break;
-                    }
-                    case HID_KEYBOARD: {
-                        xprintf("keyboard\n");
-                        USBH_HID_KeybdInit(&hUsbHostFS);
-                        break;
-                    }
-                    case HID_UNKNOWN: {
-                        xprintf("unknown or not supported by the firmware driver.\n");
-                        vTaskDelay(1000);
-                        xprintf("Hey, it's just firmware - not Linux :P\n");
-                        break;
-                    }
-                }
-            }
-
-            previousAppli_state = Appli_state;
-        }
-
-    }
-    /* USER CODE END 5 */
+//    draw_background();
+//
+//    uint8_t status = BSP_TS_Init(LCD_X_SIZE, LCD_Y_SIZE);
+//    if (status != TS_OK)
+//        xprintf("TS init error\n");
+//
+//    xprintf("initializing audio codec...\n");
+//    if (BSP_AUDIO_OUT_Init(OUTPUT_DEVICE_HEADPHONE1, 60, AUDIO_FREQUENCY_44K) == 0) {
+//        xprintf("audio init OK\n");
+//    } else {
+//        xprintf("audio init ERROR\n");
+//    }
+//    BSP_AUDIO_OUT_SetAudioFrameSlot(CODEC_AUDIOFRAME_SLOT_02);
+//
+//    static ApplicationTypeDef previousAppli_state;
+//
+//    /* Infinite loop */
+//    for (;;) {
+//        HAL_IWDG_Refresh(&hiwdg);
+//        vTaskDelay(5);
+//        LD1_TOGGLE; /* Just blink to say "I'm alive" */
+//
+//        //a recommended line to read the touch screen :)
+//        TS_StateTypeDef TS_State;
+//        BSP_TS_GetState(&TS_State);
+//
+//        char key = debug_inkey();
+//        serialTestComm(key);
+//
+//        handlePlayer();
+//
+//        if (previousAppli_state != Appli_state) {
+//
+//            if (Appli_state == APPLICATION_READY) {
+//                HID_TypeTypeDef hiddev = USBH_HID_GetDeviceType(&hUsbHostFS);
+//                xprintf("Appli_state is now APPLICATION_READY, detected device: ");
+//                switch (hiddev) {
+//                    case HID_MOUSE: {
+//                        xprintf("mouse\n");
+//                        USBH_HID_MouseInit(&hUsbHostFS);
+//                        break;
+//                    }
+//                    case HID_KEYBOARD: {
+//                        xprintf("keyboard\n");
+//                        USBH_HID_KeybdInit(&hUsbHostFS);
+//                        break;
+//                    }
+//                    case HID_UNKNOWN: {
+//                        xprintf("unknown or not supported by the firmware driver.\n");
+//                        vTaskDelay(1000);
+//                        xprintf("Hey, it's just firmware - not Linux :P\n");
+//                        break;
+//                    }
+//                }
+//            }
+//
+//            previousAppli_state = Appli_state;
+//        }
+//    }
 }
 
 /**
@@ -2537,15 +1868,9 @@ void StartDefaultTask(void const *argument) {
   * @retval None
   */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
-    /* USER CODE BEGIN Callback 0 */
-
-    /* USER CODE END Callback 0 */
     if (htim->Instance == TIM6) {
         HAL_IncTick();
     }
-    /* USER CODE BEGIN Callback 1 */
-
-    /* USER CODE END Callback 1 */
 }
 
 /**
@@ -2553,12 +1878,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
   * @retval None
   */
 void Error_Handler(void) {
-    /* USER CODE BEGIN Error_Handler_Debug */
     /* User can add his own implementation to report the HAL error return state */
     __disable_irq();
     while (1) {
     }
-    /* USER CODE END Error_Handler_Debug */
 }
 
 #ifdef  USE_FULL_ASSERT
@@ -2577,5 +1900,3 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

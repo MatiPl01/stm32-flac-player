@@ -42,7 +42,7 @@
 *~
 
 # Libraries
-lib/
+Lib/
 
 # Build files
 cmake-build-debug/

@@ -43,7 +43,7 @@
 * randm.c - Random number generator program file.
 *
 * Copyright (c) 2003 by Marc Boucher, Services Informatiques (MBSI) inc.
-* Copyright (c) 1998 by Global Election Systems Inc.
+* Copyright (c) 1998 by Global Election Systems inc.
 *
 * The authors hereby grant permission to use, copy, modify, distribute,
 * and license this software and its documentation for any purpose, provided
@@ -68,7 +68,7 @@
 *
 * 03-01-01 Marc Boucher <marc@mbsi.ca>
 *   Ported to lwIP.
-* 98-06-03 Guy Lancaster <lancasterg@acm.org>, Global Election Systems Inc.
+* 98-06-03 Guy Lancaster <lancasterg@acm.org>, Global Election Systems inc.
 *   Extracted from avos.
 *****************************************************************************/
 

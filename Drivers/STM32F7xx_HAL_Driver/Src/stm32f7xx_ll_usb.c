@@ -269,7 +269,7 @@ HAL_StatusTypeDef USB_DisableGlobalInt(USB_OTG_GlobalTypeDef *USBx)
 /**
   * @brief  USB_SetCurrentMode Set functional mode
   * @param  USBx  Selected device
-  * @param  mode  current core mode
+  * @param  mode  current Core mode
   *          This parameter can be one of these values:
   *            @arg USB_DEVICE_MODE Peripheral mode
   *            @arg USB_HOST_MODE Host mode
@@ -518,7 +518,7 @@ HAL_StatusTypeDef USB_FlushRxFifo(USB_OTG_GlobalTypeDef *USBx)
   * @param  speed  device speed
   *          This parameter can be one of these values:
   *            @arg USB_OTG_SPEED_HIGH: High speed mode
-  *            @arg USB_OTG_SPEED_HIGH_IN_FULL: High speed core in Full Speed mode
+  *            @arg USB_OTG_SPEED_HIGH_IN_FULL: High speed Core in Full Speed mode
   *            @arg USB_OTG_SPEED_FULL: Full speed mode
   * @retval  Hal status
   */
@@ -1266,9 +1266,9 @@ void  USB_ClearInterrupts(USB_OTG_GlobalTypeDef *USBx, uint32_t interrupt)
 }
 
 /**
-  * @brief  Returns USB core mode
+  * @brief  Returns USB Core mode
   * @param  USBx  Selected device
-  * @retval return core mode : Host or Device
+  * @retval return Core mode : Host or Device
   *          This parameter can be one of these values:
   *           0 : Host
   *           1 : Device

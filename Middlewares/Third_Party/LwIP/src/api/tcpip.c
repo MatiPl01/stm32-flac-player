@@ -114,7 +114,7 @@ again:
 #endif /* !LWIP_TIMERS */
 
 /**
- * The main lwIP thread. This thread has exclusive access to lwIP core functions
+ * The main lwIP thread. This thread has exclusive access to lwIP Core functions
  * (unless access to them is not locked). Other threads communicate with this
  * thread using message boxes.
  *
@@ -294,7 +294,7 @@ tcpip_input(struct pbuf *p, struct netif *inp)
  * @ingroup lwip_os
  * Call a specific function in the thread context of
  * tcpip_thread for easy access synchronization.
- * A function called in that way may access lwIP core code
+ * A function called in that way may access lwIP Core code
  * without fearing concurrent access.
  * Blocks until the request is posted.
  * Must not be called from interrupt context!
@@ -329,7 +329,7 @@ tcpip_callback(tcpip_callback_fn function, void *ctx)
  * @ingroup lwip_os
  * Call a specific function in the thread context of
  * tcpip_thread for easy access synchronization.
- * A function called in that way may access lwIP core code
+ * A function called in that way may access lwIP Core code
  * without fearing concurrent access.
  * Does NOT block when the request cannot be posted because the
  * tcpip_mbox is full, but returns ERR_MEM instead.

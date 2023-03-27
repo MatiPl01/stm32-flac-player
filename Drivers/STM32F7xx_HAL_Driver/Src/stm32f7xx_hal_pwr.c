@@ -164,7 +164,7 @@ void HAL_PWR_DisableBkUpAccess(void)
     =====================================
     [..]
       The devices feature 3 low-power modes:
-      (+) Sleep mode: Cortex-M7 core stopped, peripherals kept running.
+      (+) Sleep mode: Cortex-M7 Core stopped, peripherals kept running.
       (+) Stop mode: all clocks are stopped, regulator running, regulator 
           in low power mode
       (+) Standby mode: 1.2V domain powered off.

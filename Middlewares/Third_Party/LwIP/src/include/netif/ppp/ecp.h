@@ -1,7 +1,7 @@
 /*
  * ecp.h - Definitions for PPP Encryption Control Protocol.
  *
- * Copyright (c) 2002 Google, Inc.
+ * Copyright (c) 2002 Google, inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

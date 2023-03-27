@@ -121,7 +121,7 @@ static struct lowpan6_link_addr short_mac_addr = {2, {0, 0}};
 /* IEEE 802.15.4 specific functions: */
 
 /** Write the IEEE 802.15.4 header that encapsulates the 6LoWPAN frame.
- * Src and dst PAN IDs are filled with the ID set by @ref lowpan6_set_pan_id.
+ * src and dst PAN IDs are filled with the ID set by @ref lowpan6_set_pan_id.
  *
  * Since the length is variable:
  * @returns the header length

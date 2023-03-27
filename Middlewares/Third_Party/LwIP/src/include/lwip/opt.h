@@ -219,7 +219,7 @@
  * This macro usually calls a function that is implemented in the OS-dependent
  * sys layer and performs the following checks:
  * - Not in ISR (this should be checked for NO_SYS==1, too!)
- * - If @ref LWIP_TCPIP_CORE_LOCKING = 1: TCPIP core lock is held
+ * - If @ref LWIP_TCPIP_CORE_LOCKING = 1: TCPIP Core lock is held
  * - If @ref LWIP_TCPIP_CORE_LOCKING = 0: function is called from TCPIP thread
  * @see @ref multithreading
  */
@@ -229,7 +229,7 @@
 
 /**
  * Called as first thing in the lwIP TCPIP thread. Can be used in conjunction
- * with @ref LWIP_ASSERT_CORE_LOCKED to check core locking.
+ * with @ref LWIP_ASSERT_CORE_LOCKED to check Core locking.
  * @see @ref multithreading
  */
 #if !defined LWIP_MARK_TCPIP_THREAD || defined __DOXYGEN__
@@ -502,7 +502,7 @@
 #endif
 
 /**
- * The number of sys timeouts used by the core stack (not apps)
+ * The number of sys timeouts used by the Core stack (not apps)
  * The default number of timeouts is calculated here for all enabled modules.
  */
 #define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD)))
@@ -1044,7 +1044,7 @@
 /**
  * LWIP_MULTICAST_TX_OPTIONS==1: Enable multicast TX support like the socket options
  * IP_MULTICAST_TTL/IP_MULTICAST_IF/IP_MULTICAST_LOOP, as well as (currently only)
- * core support for the corresponding IPv6 options.
+ * Core support for the corresponding IPv6 options.
  */
 #if !defined LWIP_MULTICAST_TX_OPTIONS || defined __DOXYGEN__
 #define LWIP_MULTICAST_TX_OPTIONS       ((LWIP_IGMP || LWIP_IPV6_MLD) && (LWIP_UDP || LWIP_RAW))
@@ -2388,14 +2388,14 @@
  * setting only for single-interface configurations.
  * All addresses that have a scope according to the default policy (link-local
  * unicast addresses, interface-local and link-local multicast addresses) should
- * now have a zone set on them before being passed to the core API, although
+ * now have a zone set on them before being passed to the Core API, although
  * lwIP will currently attempt to select a zone on the caller's behalf when 
  * necessary. Applications that directly assign IPv6 addresses to interfaces
  * (which is NOT recommended) must now ensure that link-local addresses carry
  * the netif's zone. See the new ip6_zone.h header file for more information and
  * relevant macros. For now it is still possible to turn off scopes support
  * through the new LWIP_IPV6_SCOPES option. When upgrading an implementation that
- * uses the core API directly, it is highly recommended to enable
+ * uses the Core API directly, it is highly recommended to enable
  * LWIP_IPV6_SCOPES_DEBUG at least for a while, to ensure e.g. proper address
  * initialization.
  */

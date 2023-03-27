@@ -1,6 +1,6 @@
 /*
  * FreeRTOS Kernel V10.2.1
- * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * Copyright (C) 2019 Amazon.com, inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -39,15 +39,15 @@
 
 #ifndef configSYSTICK_CLOCK_HZ
 	#define configSYSTICK_CLOCK_HZ configCPU_CLOCK_HZ
-	/* Ensure the SysTick is clocked at the same frequency as the core. */
+	/* Ensure the SysTick is clocked at the same frequency as the Core. */
 	#define portNVIC_SYSTICK_CLK_BIT	( 1UL << 2UL )
 #else
 	/* The way the SysTick is clocked is not modified in case it is not the same
-	as the core. */
+	as the Core. */
 	#define portNVIC_SYSTICK_CLK_BIT	( 0 )
 #endif
 
-/* Constants required to manipulate the core.  Registers first... */
+/* Constants required to manipulate the Core.  Registers first... */
 #define portNVIC_SYSTICK_CTRL_REG			( * ( ( volatile uint32_t * ) 0xe000e010 ) )
 #define portNVIC_SYSTICK_LOAD_REG			( * ( ( volatile uint32_t * ) 0xe000e014 ) )
 #define portNVIC_SYSTICK_CURRENT_VALUE_REG	( * ( ( volatile uint32_t * ) 0xe000e018 ) )
@@ -432,7 +432,7 @@ void xPortPendSVHandler( void )
 	"	it eq								\n"
 	"	vstmdbeq r0!, {s16-s31}				\n"
 	"										\n"
-	"	stmdb r0!, {r4-r11, r14}			\n" /* Save the core registers. */
+	"	stmdb r0!, {r4-r11, r14}			\n" /* Save the Core registers. */
 	"	str r0, [r2]						\n" /* Save the new top of stack into the first member of the TCB. */
 	"										\n"
 	"	stmdb sp!, {r0, r3}					\n"
@@ -450,7 +450,7 @@ void xPortPendSVHandler( void )
 	"	ldr r1, [r3]						\n" /* The first item in pxCurrentTCB is the task top of stack. */
 	"	ldr r0, [r1]						\n"
 	"										\n"
-	"	ldmia r0!, {r4-r11, r14}			\n" /* Pop the core registers. */
+	"	ldmia r0!, {r4-r11, r14}			\n" /* Pop the Core registers. */
 	"										\n"
 	"	tst r14, #0x10						\n" /* Is the task using the FPU context?  If so, pop the high vfp registers too. */
 	"	it eq								\n"

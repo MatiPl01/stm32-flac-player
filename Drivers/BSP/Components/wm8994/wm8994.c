@@ -459,7 +459,7 @@ uint32_t wm8994_Init(uint16_t DeviceAddr, uint16_t OutputInputDevice, uint8_t Vo
   /* slave mode */
   counter += CODEC_IO_Write(DeviceAddr, 0x302, 0x0000);
   
-  /* Enable the DSP processing clock for AIF1, Enable the core clock */
+  /* Enable the DSP processing clock for AIF1, Enable the Core clock */
   counter += CODEC_IO_Write(DeviceAddr, 0x208, 0x000A);
   
   /* Enable AIF1 Clock, AIF1 Clock Source = MCLK1 pin */

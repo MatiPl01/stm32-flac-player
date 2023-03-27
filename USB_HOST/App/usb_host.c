@@ -39,7 +39,7 @@
 
 /* USER CODE END PFP */
 
-/* USB Host core handle declaration */
+/* USB Host Core handle declaration */
 USBH_HandleTypeDef hUsbHostFS;
 ApplicationTypeDef Appli_state = APPLICATION_IDLE;
 

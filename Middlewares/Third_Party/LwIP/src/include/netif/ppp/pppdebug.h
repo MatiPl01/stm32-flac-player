@@ -2,7 +2,7 @@
 * pppdebug.h - System debugging utilities.
 *
 * Copyright (c) 2003 by Marc Boucher, Services Informatiques (MBSI) inc.
-* portions Copyright (c) 1998 Global Election Systems Inc.
+* portions Copyright (c) 1998 Global Election Systems inc.
 * portions Copyright (c) 2001 by Cognizant Pty Ltd.
 *
 * The authors hereby grant permission to use, copy, modify, distribute,
@@ -28,7 +28,7 @@
 *
 * 03-01-01 Marc Boucher <marc@mbsi.ca>
 *   Ported to lwIP.
-* 98-07-29 Guy Lancaster <lancasterg@acm.org>, Global Election Systems Inc.
+* 98-07-29 Guy Lancaster <lancasterg@acm.org>, Global Election Systems inc.
 *   Original.
 *
 *****************************************************************************

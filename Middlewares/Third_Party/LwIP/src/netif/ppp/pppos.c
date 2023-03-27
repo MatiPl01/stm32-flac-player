@@ -54,7 +54,7 @@
 /* Memory pool */
 LWIP_MEMPOOL_DECLARE(PPPOS_PCB, MEMP_NUM_PPPOS_INTERFACES, sizeof(pppos_pcb), "PPPOS_PCB")
 
-/* callbacks called from PPP core */
+/* callbacks called from PPP Core */
 static err_t pppos_write(ppp_pcb *ppp, void *ctx, struct pbuf *p);
 static err_t pppos_netif_output(ppp_pcb *ppp, void *ctx, struct pbuf *pb, u16_t protocol);
 static void pppos_connect(ppp_pcb *ppp, void *ctx);
@@ -75,7 +75,7 @@ static void pppos_input_drop(pppos_pcb *pppos);
 static err_t pppos_output_append(pppos_pcb *pppos, err_t err, struct pbuf *nb, u8_t c, u8_t accm, u16_t *fcs);
 static err_t pppos_output_last(pppos_pcb *pppos, err_t err, struct pbuf *nb, u16_t *fcs);
 
-/* Callbacks structure for PPP core */
+/* Callbacks structure for PPP Core */
 static const struct link_callbacks pppos_callbacks = {
   pppos_connect,
 #if PPP_SERVER
@@ -195,7 +195,7 @@ ppp_pcb *pppos_create(struct netif *pppif, pppos_output_cb_fn output_cb,
   return ppp;
 }
 
-/* Called by PPP core */
+/* Called by PPP Core */
 static err_t
 pppos_write(ppp_pcb *ppp, void *ctx, struct pbuf *p)
 {
@@ -248,7 +248,7 @@ pppos_write(ppp_pcb *ppp, void *ctx, struct pbuf *p)
   return err;
 }
 
-/* Called by PPP core */
+/* Called by PPP Core */
 static err_t
 pppos_netif_output(ppp_pcb *ppp, void *ctx, struct pbuf *pb, u16_t protocol)
 {

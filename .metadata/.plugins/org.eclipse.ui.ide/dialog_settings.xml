@@ -7,7 +7,7 @@
 		<item key="WizardProjectsImportPage.STORE_CLOSE_CREATED_PROJECTS_ID" value="false"/>
 		<item key="WizardProjectsImportPage.STORE_HIDE_CONFLICTING_PROJECTS_ID" value="false"/>
 		<list key="WizardProjectsImportPage.STORE_DIRECTORIES">
-			<item value="D:\Repo\VI_sem\F7_LCD_HID_Audio_wav_player"/>
+			<item value="D:\Repo\VI_sem\STM32_FLAC_PLAYER"/>
 		</list>
 		<list key="WizardProjectsImportPage.STORE_ARCHIVES">
 			<item value=""/>
@@ -19,7 +19,7 @@
 		<item key="SmartImportRootWizardPage.STORE_NESTED_PROJECTS" value="true"/>
 		<item key="SmartImportRootWizardPage.STORE_CONFIGURE_NATURES" value="true"/>
 		<list key="org.eclipse.ui.internal.wizards.datatransfer.SmartImportRootWizardPage.knownSources">
-			<item value="D:\Repo\VI_sem\F7_LCD_HID_Audio_wav_player"/>
+			<item value="D:\Repo\VI_sem\STM32_FLAC_PLAYER"/>
 		</list>
 	</section>
 	<section name="ChooseWorkspaceDialogSettings">

@@ -2,7 +2,7 @@
  * mppe.c - interface MPPE to the PPP code.
  *
  * By Frank Cusack <fcusack@fcusack.com>.
- * Copyright (c) 2002,2003,2004 Google, Inc.
+ * Copyright (c) 2002,2003,2004 Google, inc.
  * All rights reserved.
  *
  * License:

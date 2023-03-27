@@ -14,7 +14,7 @@ set(SIZE arm-none-eabi-size)
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 
 # project settings
-project(F7_LCD_HID_Audio_wav_player C CXX ASM)
+project(STM32_FLAC_PLAYER C CXX ASM)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_C_STANDARD 11)
 
@@ -49,11 +49,46 @@ else ()
     add_compile_options(-Og -g)
 endif ()
 
-include_directories(Core/Inc FATFS/Target FATFS/App LWIP/App LWIP/Target USB_HOST/App USB_HOST/Target Middlewares/Third_Party/LwIP/src/include Middlewares/Third_Party/LwIP/system Drivers/STM32F7xx_HAL_Driver/Inc Drivers/STM32F7xx_HAL_Driver/Inc/Legacy Middlewares/Third_Party/FreeRTOS/Source/include Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 Middlewares/Third_Party/FatFs/src Middlewares/Third_Party/LwIP/src/include/netif/ppp Middlewares/ST/STM32_USB_Host_Library/Core/Inc Middlewares/ST/STM32_USB_Host_Library/Class/HID/Inc Drivers/CMSIS/Device/ST/STM32F7xx/Include Middlewares/Third_Party/LwIP/src/include/lwip Middlewares/Third_Party/LwIP/src/include/lwip/apps Middlewares/Third_Party/LwIP/src/include/lwip/priv Middlewares/Third_Party/LwIP/src/include/lwip/prot Middlewares/Third_Party/LwIP/src/include/netif Middlewares/Third_Party/LwIP/src/include/compat/posix Middlewares/Third_Party/LwIP/src/include/compat/posix/arpa Middlewares/Third_Party/LwIP/src/include/compat/posix/net Middlewares/Third_Party/LwIP/src/include/compat/posix/sys Middlewares/Third_Party/LwIP/src/include/compat/stdc Middlewares/Third_Party/LwIP/system/arch Drivers/CMSIS/Include Drivers/BSP/STM32746G-Discovery)
+include_directories(
+    Core/Inc
+    FATFS/Target
+    FATFS/App
+    LWIP/App
+    LWIP/Target
+    USB_HOST/App
+    USB_HOST/Target
+    Middlewares/Third_Party/LwIP/src/include
+    Middlewares/Third_Party/LwIP/system
+    Drivers/STM32F7xx_HAL_Driver/Inc
+    Drivers/STM32F7xx_HAL_Driver/Inc/Legacy
+    Middlewares/Third_Party/FreeRTOS/Source/include
+    Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS
+    Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1
+    Middlewares/Third_Party/FatFs/src
+    Middlewares/Third_Party/LwIP/src/include/netif/ppp
+    Middlewares/ST/STM32_USB_Host_Library/Core/Inc
+    Middlewares/ST/STM32_USB_Host_Library/Class/HID/Inc
+    Drivers/CMSIS/Device/ST/STM32F7xx/Include
+    Middlewares/Third_Party/LwIP/src/include/lwip
+    Middlewares/Third_Party/LwIP/src/include/lwip/apps
+    Middlewares/Third_Party/LwIP/src/include/lwip/priv
+    Middlewares/Third_Party/LwIP/src/include/lwip/prot
+    Middlewares/Third_Party/LwIP/src/include/netif
+    Middlewares/Third_Party/LwIP/src/include/compat/posix
+    Middlewares/Third_Party/LwIP/src/include/compat/posix/arpa
+    Middlewares/Third_Party/LwIP/src/include/compat/posix/net
+    Middlewares/Third_Party/LwIP/src/include/compat/posix/sys
+    Middlewares/Third_Party/LwIP/src/include/compat/stdc
+    Middlewares/Third_Party/LwIP/system/arch
+    Drivers/CMSIS/Include
+    Drivers/BSP/STM32746G-Discovery
+
+    Lib/player/Inc
+)
 
 add_definitions(-DDEBUG -DUSE_HAL_DRIVER -DSTM32F746xx)
 
-file(GLOB_RECURSE SOURCES "USB_HOST/*.*" "Core/*.*" "FATFS/*.*" "Middlewares/*.*" "LWIP/*.*" "Drivers/*.*")
+file(GLOB_RECURSE SOURCES "USB_HOST/*.*" "Core/*.*" "Lib/*.*" "FATFS/*.*" "Middlewares/*.*" "LWIP/*.*" "Drivers/*.*")
 
 set(LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/STM32F746NGHX_FLASH.ld)
 

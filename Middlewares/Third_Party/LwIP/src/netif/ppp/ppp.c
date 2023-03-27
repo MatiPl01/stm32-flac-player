@@ -2,7 +2,7 @@
 * ppp.c - Network Point to Point Protocol program file.
 *
 * Copyright (c) 2003 by Marc Boucher, Services Informatiques (MBSI) inc.
-* portions Copyright (c) 1997 by Global Election Systems Inc.
+* portions Copyright (c) 1997 by Global Election Systems inc.
 *
 * The authors hereby grant permission to use, copy, modify, distribute,
 * and license this software and its documentation for any purpose, provided
@@ -27,7 +27,7 @@
 *
 * 03-01-01 Marc Boucher <marc@mbsi.ca>
 *   Ported to lwIP.
-* 97-11-05 Guy Lancaster <lancasterg@acm.org>, Global Election Systems Inc.
+* 97-11-05 Guy Lancaster <lancasterg@acm.org>, Global Election Systems inc.
 *   Original.
 *****************************************************************************/
 

@@ -127,7 +127,7 @@ extern "C" {
 #define  EREMCHG         78  /* Remote address changed */
 #define  ELIBACC         79  /* Can not access a needed shared library */
 #define  ELIBBAD         80  /* Accessing a corrupted shared library */
-#define  ELIBSCN         81  /* .lib section in a.out corrupted */
+#define  ELIBSCN         81  /* .Lib section in a.out corrupted */
 #define  ELIBMAX         82  /* Attempting to link in too many shared libraries */
 #define  ELIBEXEC        83  /* Cannot exec a shared library directly */
 #define  EILSEQ          84  /* Illegal byte sequence */

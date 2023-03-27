@@ -2153,7 +2153,7 @@ lwip_netconn_do_gethostbyname(void *arg)
   API_EXPR_DEREF(msg->err) = dns_gethostbyname_addrtype(msg->name,
                              API_EXPR_REF(msg->addr), lwip_netconn_do_dns_found, msg, addrtype);
 #if LWIP_TCPIP_CORE_LOCKING
-  /* For core locking, only block if we need to wait for answer/timeout */
+  /* For Core locking, only block if we need to wait for answer/timeout */
   if (API_EXPR_DEREF(msg->err) == ERR_INPROGRESS) {
     UNLOCK_TCPIP_CORE();
     sys_sem_wait(API_EXPR_REF_SEM(msg->sem));

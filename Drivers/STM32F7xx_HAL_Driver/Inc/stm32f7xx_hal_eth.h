@@ -681,7 +681,7 @@ typedef  void (*pETH_CallbackTypeDef)(ETH_HandleTypeDef * heth); /*!< pointer to
   * @{
   */ 
 #define ETH_MAX_PACKET_SIZE    ((uint32_t)1524U)    /*!< ETH_HEADER + ETH_EXTRA + ETH_VLAN_TAG + ETH_MAX_ETH_PAYLOAD + ETH_CRC */
-#define ETH_HEADER               ((uint32_t)14U)    /*!< 6 byte Dest addr, 6 byte Src addr, 2 byte length/type */
+#define ETH_HEADER               ((uint32_t)14U)    /*!< 6 byte Dest addr, 6 byte src addr, 2 byte length/type */
 #define ETH_CRC                   ((uint32_t)4U)    /*!< Ethernet CRC */
 #define ETH_EXTRA                 ((uint32_t)2U)    /*!< Extra bytes in some cases */   
 #define ETH_VLAN_TAG              ((uint32_t)4U)    /*!< optional 802.1q VLAN Tag */

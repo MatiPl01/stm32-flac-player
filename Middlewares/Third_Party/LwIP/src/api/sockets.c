@@ -261,7 +261,7 @@ static struct lwip_sock sockets[NUM_SOCKETS];
 
 #if LWIP_SOCKET_SELECT || LWIP_SOCKET_POLL
 #if LWIP_TCPIP_CORE_LOCKING
-/* protect the select_cb_list using core lock */
+/* protect the select_cb_list using Core lock */
 #define LWIP_SOCKET_SELECT_DECL_PROTECT(lev)
 #define LWIP_SOCKET_SELECT_PROTECT(lev)   LOCK_TCPIP_CORE()
 #define LWIP_SOCKET_SELECT_UNPROTECT(lev) UNLOCK_TCPIP_CORE()
@@ -2466,7 +2466,7 @@ lwip_poll_should_wake(const struct lwip_select_cb *scb, int fd, int has_recveven
  * Processes recvevent (data available) and wakes up tasks waiting for select.
  *
  * @note for LWIP_TCPIP_CORE_LOCKING any caller of this function
- * must have the core lock held when signaling the following events
+ * must have the Core lock held when signaling the following events
  * as they might cause select_list_cb to be checked:
  *   NETCONN_EVT_RCVPLUS
  *   NETCONN_EVT_SENDPLUS
@@ -2565,7 +2565,7 @@ event_callback(struct netconn *conn, enum netconn_evt evt, u16_t len)
  *
  * @note on synchronization of select_cb_list:
  * LWIP_TCPIP_CORE_LOCKING: the select_cb_list must only be accessed while holding
- * the core lock. We do a single pass through the list and signal any waiters.
+ * the Core lock. We do a single pass through the list and signal any waiters.
  * Core lock should already be held when calling here!!!!
 
  * !LWIP_TCPIP_CORE_LOCKING: we use SYS_ARCH_PROTECT but unlock on each iteration
@@ -2776,7 +2776,7 @@ lwip_getsockopt(int s, int level, int optname, void *optval, socklen_t *optlen)
   }
 
 #if LWIP_TCPIP_CORE_LOCKING
-  /* core-locking can just call the -impl function */
+  /* Core-locking can just call the -impl function */
   LOCK_TCPIP_CORE();
   err = lwip_getsockopt_impl(s, level, optname, optval, optlen);
   UNLOCK_TCPIP_CORE();
@@ -3222,7 +3222,7 @@ lwip_setsockopt(int s, int level, int optname, const void *optval, socklen_t opt
   }
 
 #if LWIP_TCPIP_CORE_LOCKING
-  /* core-locking can just call the -impl function */
+  /* Core-locking can just call the -impl function */
   LOCK_TCPIP_CORE();
   err = lwip_setsockopt_impl(s, level, optname, optval, optlen);
   UNLOCK_TCPIP_CORE();

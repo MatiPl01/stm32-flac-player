@@ -72,34 +72,34 @@ $(wildcard ../makefile.init) \
 $(wildcard ../makefile.targets) \
 
 
-BUILD_ARTIFACT_NAME := F7_LCD_HID_Audio_wav_player
+BUILD_ARTIFACT_NAME := STM32_FLAC_PLAYER
 BUILD_ARTIFACT_EXTENSION := elf
 BUILD_ARTIFACT_PREFIX :=
 BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME)$(if $(BUILD_ARTIFACT_EXTENSION),.$(BUILD_ARTIFACT_EXTENSION),)
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXECUTABLES += \
-F7_LCD_HID_Audio_wav_player.elf \
+STM32_FLAC_PLAYER.elf \
 
 SIZE_OUTPUT += \
 default.size.stdout \
 
 OBJDUMP_LIST += \
-F7_LCD_HID_Audio_wav_player.list \
+STM32_FLAC_PLAYER.list \
 
 OBJCOPY_BIN += \
-F7_LCD_HID_Audio_wav_player.bin \
+STM32_FLAC_PLAYER.bin \
 
 
 # All Target
 all: main-build
 
 # Main-build Target
-main-build: F7_LCD_HID_Audio_wav_player.elf secondary-outputs
+main-build: STM32_FLAC_PLAYER.elf secondary-outputs
 
 # Tool invocations
-F7_LCD_HID_Audio_wav_player.elf: $(OBJS) $(USER_OBJS) /home/ada/Desktop/Dydaktyka_21-22-zima/STM32_Projects/F7_LCD_HID_Audio_wav_player/STM32F746NGHX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "F7_LCD_HID_Audio_wav_player.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"/home/ada/Desktop/Dydaktyka_21-22-zima/STM32_Projects/F7_LCD_HID_Audio_wav_player/STM32F746NGHX_FLASH.ld" --specs=nosys.specs -Wl,-Map="F7_LCD_HID_Audio_wav_player.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+STM32_FLAC_PLAYER.elf: $(OBJS) $(USER_OBJS) /home/ada/Desktop/Dydaktyka_21-22-zima/STM32_Projects/STM32_FLAC_PLAYER/STM32F746NGHX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "STM32_FLAC_PLAYER.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"/home/ada/Desktop/Dydaktyka_21-22-zima/STM32_Projects/STM32_FLAC_PLAYER/STM32F746NGHX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM32_FLAC_PLAYER.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -108,19 +108,19 @@ default.size.stdout: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	@echo 'Finished building: $@'
 	@echo ' '
 
-F7_LCD_HID_Audio_wav_player.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "F7_LCD_HID_Audio_wav_player.list"
+STM32_FLAC_PLAYER.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "STM32_FLAC_PLAYER.list"
 	@echo 'Finished building: $@'
 	@echo ' '
 
-F7_LCD_HID_Audio_wav_player.bin: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objcopy  -O binary $(EXECUTABLES) "F7_LCD_HID_Audio_wav_player.bin"
+STM32_FLAC_PLAYER.bin: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objcopy  -O binary $(EXECUTABLES) "STM32_FLAC_PLAYER.bin"
 	@echo 'Finished building: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) $(SIZE_OUTPUT)$(OBJDUMP_LIST)$(EXECUTABLES)$(OBJS)$(S_DEPS)$(S_UPPER_DEPS)$(C_DEPS)$(OBJCOPY_BIN) F7_LCD_HID_Audio_wav_player.elf
+	-$(RM) $(SIZE_OUTPUT)$(OBJDUMP_LIST)$(EXECUTABLES)$(OBJS)$(S_DEPS)$(S_UPPER_DEPS)$(C_DEPS)$(OBJCOPY_BIN) STM32_FLAC_PLAYER.elf
 	-@echo ' '
 
 secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST) $(OBJCOPY_BIN)

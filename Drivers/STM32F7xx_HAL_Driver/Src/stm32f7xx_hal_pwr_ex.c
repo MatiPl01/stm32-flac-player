@@ -107,9 +107,9 @@
     =================================================
     [..]         
        (+) In Run mode: the main regulator has 2 operating modes available:
-        (++) Normal mode: The CPU and core logic operate at maximum frequency at a given 
+        (++) Normal mode: The CPU and Core logic operate at maximum frequency at a given
              voltage scaling (scale 1, scale 2 or scale 3)
-        (++) Over-drive mode: This mode allows the CPU and the core logic to operate at a 
+        (++) Over-drive mode: This mode allows the CPU and the Core logic to operate at a
             higher frequency than the normal mode for a given voltage scaling (scale 1,  
             scale 2 or scale 3). This mode is enabled through HAL_PWREx_EnableOverDrive() function and
             disabled by HAL_PWREx_DisableOverDrive() function, to enter or exit from Over-drive mode please follow 
@@ -248,7 +248,7 @@ void HAL_PWREx_DisableLowRegulatorLowVoltage(void)
 
 /**
   * @brief  Activates the Over-Drive mode.
-  * @note   This mode allows the CPU and the core logic to operate at a higher frequency
+  * @note   This mode allows the CPU and the Core logic to operate at a higher frequency
   *         than the normal mode for a given voltage scaling (scale 1, scale 2 or scale 3).   
   * @note   It is recommended to enter or exit Over-drive mode when the application is not running 
   *         critical tasks and when the system clock source is either HSI or HSE. 
@@ -294,7 +294,7 @@ HAL_StatusTypeDef HAL_PWREx_EnableOverDrive(void)
 
 /**
   * @brief  Deactivates the Over-Drive mode.
-  * @note   This mode allows the CPU and the core logic to operate at a higher frequency
+  * @note   This mode allows the CPU and the Core logic to operate at a higher frequency
   *         than the normal mode for a given voltage scaling (scale 1, scale 2 or scale 3).    
   * @note   It is recommended to enter or exit Over-drive mode when the application is not running 
   *         critical tasks and when the system clock source is either HSI or HSE. 

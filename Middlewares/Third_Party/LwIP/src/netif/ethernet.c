@@ -274,7 +274,7 @@ ethernet_output(struct netif * netif, struct pbuf * p,
   u16_t eth_type_be = lwip_htons(eth_type);
 
 #if ETHARP_SUPPORT_VLAN && defined(LWIP_HOOK_VLAN_SET)
-  s32_t vlan_prio_vid = LWIP_HOOK_VLAN_SET(netif, p, src, dst, eth_type);
+  s32_t vlan_prio_vid = LWIP_HOOK_VLAN_SET(netif, p, Src, dst, eth_type);
   if (vlan_prio_vid >= 0) {
     struct eth_vlan_hdr *vlanhdr;
 

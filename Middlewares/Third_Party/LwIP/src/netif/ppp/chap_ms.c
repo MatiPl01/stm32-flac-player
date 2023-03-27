@@ -46,7 +46,7 @@
  *   implementation in RFC 2759.  Implemented MPPE functionality,
  *   heavily based on sample implementation in RFC 3079.
  *
- * Copyright (c) 2002 Google, Inc.  All rights reserved.
+ * Copyright (c) 2002 Google, inc.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions

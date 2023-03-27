@@ -108,7 +108,7 @@ static err_t netconn_close_shutdown(struct netconn *conn, u8_t how);
 /**
  * Call the lower part of a netconn_* function
  * This function is then running in the thread context
- * of tcpip_thread and has exclusive access to lwIP core code.
+ * of tcpip_thread and has exclusive access to lwIP Core code.
  *
  * @param fn function to call
  * @param apimsg a struct containing the function to call and its parameters
@@ -1058,7 +1058,7 @@ netconn_write_vectors_partly(struct netconn *conn, struct netvector *vectors, u1
   }
 #endif /* LWIP_SO_SNDTIMEO */
 
-  /* For locking the core: this _can_ be delayed on low memory/low send buffer,
+  /* For locking the Core: this _can_ be delayed on low memory/low send buffer,
      but if it is, this is done inside api_msg.c:do_write(), so we can use the
      non-blocking version here. */
   err = netconn_apimsg(lwip_netconn_do_write, &API_MSG_VAR_REF(msg));

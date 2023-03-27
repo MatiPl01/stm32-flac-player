@@ -230,7 +230,7 @@ struct netconn {
   /** the last asynchronous unreported error this netconn had */
   err_t pending_err;
 #if !LWIP_NETCONN_SEM_PER_THREAD
-  /** sem that is used to synchronously execute functions in the core context */
+  /** sem that is used to synchronously execute functions in the Core context */
   sys_sem_t op_completed;
 #endif
   /** mbox where received packets are stored until they are fetched
