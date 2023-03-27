@@ -1796,7 +1796,9 @@ void StartDefaultTask(void const *argument) {
     vTaskDelay(800);
     lcd_start();
 
-    controller_task();
+    load_screen();
+    render_text();
+//    controller_task();
 
 //    draw_background();
 //
