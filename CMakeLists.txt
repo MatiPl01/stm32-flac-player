@@ -83,6 +83,10 @@ include_directories(
     Drivers/CMSIS/Include
     Drivers/BSP/STM32746G-Discovery
 
+    Lib/libflac
+    Lib/libflac/include
+    Lib/libflac/src/libFLAC/include
+
     Lib/player/Inc
 )
 

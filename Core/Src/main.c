@@ -41,7 +41,7 @@
 #include "stm32746g_discovery_ts.h"
 #include "stm32746g_discovery_audio.h"
 
-#include "../../Lib/player/Inc/controller.h"
+#include "controller.h"
 
 /* Private variables ---------------------------------------------------------*/
 ADC_HandleTypeDef hadc3;
@@ -158,10 +158,10 @@ void StartDefaultTask(void const *argument);
 
 #define LCD_LAYER_FG    1
 #define LCD_LAYER_BG    0
-#define LCD_X_SIZE      RK043FN48H_WIDTH
-#define LCD_Y_SIZE      RK043FN48H_HEIGHT
-static volatile uint32_t lcd_image_fg[LCD_Y_SIZE][LCD_X_SIZE] __attribute__((section(".sdram")));
-static volatile uint32_t lcd_image_bg[LCD_Y_SIZE][LCD_X_SIZE] __attribute__((section(".sdram")));
+#define DISPLAY_WIDTH      RK043FN48H_WIDTH
+#define DISPLAY_HEIGHT      RK043FN48H_HEIGHT
+static volatile uint32_t lcd_image_fg[DISPLAY_HEIGHT][DISPLAY_WIDTH] __attribute__((section(".sdram")));
+static volatile uint32_t lcd_image_bg[DISPLAY_HEIGHT][DISPLAY_WIDTH] __attribute__((section(".sdram")));
 extern ApplicationTypeDef Appli_state;
 extern USBH_HandleTypeDef hUsbHostFS;
 extern char SDPath[4];   /* SD logical drive path */
@@ -1431,36 +1431,6 @@ static void http_server_netconn_thread(void const *arg)
 }
 #endif
 
-
-static void lcd_start(void) {
-    BSP_LCD_Init();
-
-    BSP_LCD_LayerDefaultInit(LCD_LAYER_FG, (uint32_t) lcd_image_fg);
-    BSP_LCD_LayerDefaultInit(LCD_LAYER_BG, (uint32_t) lcd_image_bg);
-
-    BSP_LCD_DisplayOn();
-
-    BSP_LCD_SelectLayer(LCD_LAYER_BG);
-    BSP_LCD_Clear(LCD_COLOR_WHITE);
-    BSP_LCD_SetBackColor(LCD_COLOR_WHITE);
-
-    BSP_LCD_SelectLayer(LCD_LAYER_FG);
-    BSP_LCD_Clear(LCD_COLOR_WHITE);
-    BSP_LCD_SetBackColor(LCD_COLOR_WHITE);
-
-    BSP_LCD_SetColorKeying(LCD_LAYER_FG, LCD_COLOR_WHITE);
-
-    BSP_LCD_SetTransparency(LCD_LAYER_BG, 255);
-    BSP_LCD_SetTransparency(LCD_LAYER_FG, 255);
-}
-
-void draw_background(void) {
-    BSP_LCD_SelectLayer(LCD_LAYER_BG);
-    BSP_LCD_Clear(LCD_COLOR_WHITE);
-
-    BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
-}
-
 void BSP_AUDIO_OUT_TransferComplete_CallBack(void) {
     buf_offs = BUFFER_OFFSET_FULL;
 }
@@ -1468,7 +1438,6 @@ void BSP_AUDIO_OUT_TransferComplete_CallBack(void) {
 void BSP_AUDIO_OUT_HalfTransfer_CallBack(void) {
     buf_offs = BUFFER_OFFSET_HALF;
 }
-
 
 int GetPlaylistItemName(int item, char *itemName) {
     if (strlen(&fileListBuf[item][0]) == 0) {
@@ -1790,19 +1759,13 @@ void StartDefaultTask(void const *argument) {
     MX_USB_HOST_Init();
     /* USER CODE BEGIN 5 */
 
-    lcd_start();
-    vTaskDelay(500);
-    lcd_start();
-    vTaskDelay(800);
-    lcd_start();
+    controller_task();
 
-    load_screen();
-    render_text();
 //    controller_task();
 
 //    draw_background();
 //
-//    uint8_t status = BSP_TS_Init(LCD_X_SIZE, LCD_Y_SIZE);
+//    uint8_t status = BSP_TS_Init(DISPLAY_WIDTH, DISPLAY_HEIGHT);
 //    if (status != TS_OK)
 //        xprintf("TS init error\n");
 //

@@ -1,8 +1,7 @@
-//
-// Created by Mateusz Łopaciński on 27/03/2023.
-//
-#include "term_io.h"
+#include "controller.h"
+#include "display.h"
 
 void controller_task(void) {
-    xprintf("test print\n");
+    load_screen();
+    render_text();
 }
