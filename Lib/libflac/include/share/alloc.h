@@ -42,6 +42,7 @@
  */
 
 #include <limits.h> /* for SIZE_MAX */
+#include <stdint.h>
 #if HAVE_STDINT_H
 #include <stdint.h> /* for SIZE_MAX in case limits.h didn't get it */
 #endif

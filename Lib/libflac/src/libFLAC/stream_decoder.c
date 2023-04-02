@@ -53,6 +53,7 @@
 #include "private/md5.h"
 #include "private/memory.h"
 #include "private/macros.h"
+#include "config.h"
 
 
 /* technically this should be in an "export.c" but this is convenient enough */

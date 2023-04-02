@@ -86,13 +86,15 @@ include_directories(
     Lib/libflac
     Lib/libflac/include
     Lib/libflac/src/libFLAC/include
-
-    Lib/player/Inc
+    Player/Inc
 )
 
 add_definitions(-DDEBUG -DUSE_HAL_DRIVER -DSTM32F746xx)
 
-file(GLOB_RECURSE SOURCES "USB_HOST/*.*" "Core/*.*" "Lib/*.*" "FATFS/*.*" "Middlewares/*.*" "LWIP/*.*" "Drivers/*.*")
+file(GLOB_RECURSE SOURCES "USB_HOST/*.*" "Core/*.*" "Player/*.*" "FATFS/*.*" "Middlewares/*.*" "LWIP/*.*" "Drivers/*.*"
+        "Lib/libflac/src/libFLAC/stream_decoder.c" "Lib/libflac/src/libFLAC/bitreader.c" "Lib/libflac/src/libFLAC/cpu.c"
+        "Lib/libflac/src/libFLAC/format.c" "Lib/libflac/src/libFLAC/bitwriter.c" "Lib/libflac/src/libFLAC/crc.c"
+        "Lib/libflac/src/libFLAC/lpc.c" "Lib/libflac/src/libFLAC/md5.c" "Lib/libflac/src/libFLAC/memory.c" "Lib/libflac/src/libFLAC/fixed.c" )
 
 set(LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/STM32F746NGHX_FLASH.ld)
 
