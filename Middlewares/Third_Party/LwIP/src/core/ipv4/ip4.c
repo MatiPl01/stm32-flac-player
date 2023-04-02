@@ -126,11 +126,11 @@ ip4_set_default_multicast_netif(struct netif *default_multicast_netif)
  * LWIP_HOOK_IP4_ROUTE_SRC(). This function only provides the parameters.
  */
 struct netif *
-ip4_route_src(const ip4_addr_t *src, const ip4_addr_t *dest)
+ip4_route_src(const ip4_addr_t *Src, const ip4_addr_t *dest)
 {
-  if (src != NULL) {
-    /* when src==NULL, the hook is called from ip4_route(dest) */
-    struct netif *netif = LWIP_HOOK_IP4_ROUTE_SRC(src, dest);
+  if (Src != NULL) {
+    /* when Src==NULL, the hook is called from ip4_route(dest) */
+    struct netif *netif = LWIP_HOOK_IP4_ROUTE_SRC(Src, dest);
     if (netif != NULL) {
       return netif;
     }
@@ -769,7 +769,7 @@ ip4_input(struct pbuf *p, struct netif *inp)
  * @param p the packet to send (p->payload points to the data, e.g. next
             protocol header; if dest == LWIP_IP_HDRINCL, p already includes an
             IP header and p->payload points to that IP header)
- * @param src the source IP address to send from (if src == IP4_ADDR_ANY, the
+ * @param src the source IP address to send from (if Src == IP4_ADDR_ANY, the
  *         IP  address of the netif used to send is used as source address)
  * @param dest the destination IP address to send the packet to
  * @param ttl the TTL value to be set in the IP header
@@ -789,7 +789,7 @@ ip4_output_if(struct pbuf *p, const ip4_addr_t *src, const ip4_addr_t *dest,
               u8_t proto, struct netif *netif)
 {
 #if IP_OPTIONS_SEND
-  return ip4_output_if_opt(p, src, dest, ttl, tos, proto, netif, NULL, 0);
+  return ip4_output_if_opt(p, Src, dest, ttl, tos, proto, netif, NULL, 0);
 }
 
 /**
@@ -799,7 +799,7 @@ ip4_output_if(struct pbuf *p, const ip4_addr_t *src, const ip4_addr_t *dest,
  * @ param optlen length of ip_options
  */
 err_t
-ip4_output_if_opt(struct pbuf *p, const ip4_addr_t *src, const ip4_addr_t *dest,
+ip4_output_if_opt(struct pbuf *p, const ip4_addr_t *Src, const ip4_addr_t *dest,
                   u8_t ttl, u8_t tos, u8_t proto, struct netif *netif, void *ip_options,
                   u16_t optlen)
 {
@@ -820,7 +820,7 @@ ip4_output_if_opt(struct pbuf *p, const ip4_addr_t *src, const ip4_addr_t *dest,
 }
 
 /**
- * Same as ip_output_if() but 'src' address is not replaced by netif address
+ * Same as ip_output_if() but 'Src' address is not replaced by netif address
  * when it is 'any'.
  */
 err_t
@@ -829,15 +829,15 @@ ip4_output_if_src(struct pbuf *p, const ip4_addr_t *src, const ip4_addr_t *dest,
                   u8_t proto, struct netif *netif)
 {
 #if IP_OPTIONS_SEND
-  return ip4_output_if_opt_src(p, src, dest, ttl, tos, proto, netif, NULL, 0);
+  return ip4_output_if_opt_src(p, Src, dest, ttl, tos, proto, netif, NULL, 0);
 }
 
 /**
- * Same as ip_output_if_opt() but 'src' address is not replaced by netif address
+ * Same as ip_output_if_opt() but 'Src' address is not replaced by netif address
  * when it is 'any'.
  */
 err_t
-ip4_output_if_opt_src(struct pbuf *p, const ip4_addr_t *src, const ip4_addr_t *dest,
+ip4_output_if_opt_src(struct pbuf *p, const ip4_addr_t *Src, const ip4_addr_t *dest,
                       u8_t ttl, u8_t tos, u8_t proto, struct netif *netif, void *ip_options,
                       u16_t optlen)
 {
@@ -936,13 +936,13 @@ ip4_output_if_opt_src(struct pbuf *p, const ip4_addr_t *src, const ip4_addr_t *d
     if (src == NULL) {
       ip4_addr_copy(iphdr->src, *IP4_ADDR_ANY4);
     } else {
-      /* src cannot be NULL here */
+      /* Src cannot be NULL here */
       ip4_addr_copy(iphdr->src, *src);
     }
 
 #if CHECKSUM_GEN_IP_INLINE
-    chk_sum += ip4_addr_get_u32(&iphdr->src) & 0xFFFF;
-    chk_sum += ip4_addr_get_u32(&iphdr->src) >> 16;
+    chk_sum += ip4_addr_get_u32(&iphdr->Src) & 0xFFFF;
+    chk_sum += ip4_addr_get_u32(&iphdr->Src) >> 16;
     chk_sum = (chk_sum >> 16) + (chk_sum & 0xFFFF);
     chk_sum = (chk_sum >> 16) + chk_sum;
     chk_sum = ~chk_sum;
@@ -1014,7 +1014,7 @@ ip4_output_if_opt_src(struct pbuf *p, const ip4_addr_t *src, const ip4_addr_t *d
  * @param p the packet to send (p->payload points to the data, e.g. next
             protocol header; if dest == LWIP_IP_HDRINCL, p already includes an
             IP header and p->payload points to that IP header)
- * @param src the source IP address to send from (if src == IP4_ADDR_ANY, the
+ * @param src the source IP address to send from (if Src == IP4_ADDR_ANY, the
  *         IP  address of the netif used to send is used as source address)
  * @param dest the destination IP address to send the packet to
  * @param ttl the TTL value to be set in the IP header
@@ -1049,7 +1049,7 @@ ip4_output(struct pbuf *p, const ip4_addr_t *src, const ip4_addr_t *dest,
  * @param p the packet to send (p->payload points to the data, e.g. next
             protocol header; if dest == LWIP_IP_HDRINCL, p already includes an
             IP header and p->payload points to that IP header)
- * @param src the source IP address to send from (if src == IP4_ADDR_ANY, the
+ * @param Src the source IP address to send from (if Src == IP4_ADDR_ANY, the
  *         IP  address of the netif used to send is used as source address)
  * @param dest the destination IP address to send the packet to
  * @param ttl the TTL value to be set in the IP header
@@ -1062,7 +1062,7 @@ ip4_output(struct pbuf *p, const ip4_addr_t *src, const ip4_addr_t *dest,
  *         see ip_output_if() for more return values
  */
 err_t
-ip4_output_hinted(struct pbuf *p, const ip4_addr_t *src, const ip4_addr_t *dest,
+ip4_output_hinted(struct pbuf *p, const ip4_addr_t *Src, const ip4_addr_t *dest,
                   u8_t ttl, u8_t tos, u8_t proto, struct netif_hint *netif_hint)
 {
   struct netif *netif;
@@ -1070,7 +1070,7 @@ ip4_output_hinted(struct pbuf *p, const ip4_addr_t *src, const ip4_addr_t *dest,
 
   LWIP_IP_CHECK_PBUF_REF_COUNT_FOR_TX(p);
 
-  if ((netif = ip4_route_src(src, dest)) == NULL) {
+  if ((netif = ip4_route_src(Src, dest)) == NULL) {
     LWIP_DEBUGF(IP_DEBUG, ("ip4_output: No route to %"U16_F".%"U16_F".%"U16_F".%"U16_F"\n",
                            ip4_addr1_16(dest), ip4_addr2_16(dest), ip4_addr3_16(dest), ip4_addr4_16(dest)));
     IP_STATS_INC(ip.rterr);
@@ -1078,7 +1078,7 @@ ip4_output_hinted(struct pbuf *p, const ip4_addr_t *src, const ip4_addr_t *dest,
   }
 
   NETIF_SET_HINTS(netif, netif_hint);
-  err = ip4_output_if(p, src, dest, ttl, tos, proto, netif);
+  err = ip4_output_if(p, Src, dest, ttl, tos, proto, netif);
   NETIF_RESET_HINTS(netif);
 
   return err;
@@ -1114,11 +1114,11 @@ ip4_debug_print(struct pbuf *p)
                          (u16_t)IPH_PROTO(iphdr),
                          lwip_ntohs(IPH_CHKSUM(iphdr))));
   LWIP_DEBUGF(IP_DEBUG, ("+-------------------------------+\n"));
-  LWIP_DEBUGF(IP_DEBUG, ("|  %3"U16_F"  |  %3"U16_F"  |  %3"U16_F"  |  %3"U16_F"  | (src)\n",
-                         ip4_addr1_16_val(iphdr->src),
-                         ip4_addr2_16_val(iphdr->src),
-                         ip4_addr3_16_val(iphdr->src),
-                         ip4_addr4_16_val(iphdr->src)));
+  LWIP_DEBUGF(IP_DEBUG, ("|  %3"U16_F"  |  %3"U16_F"  |  %3"U16_F"  |  %3"U16_F"  | (Src)\n",
+                         ip4_addr1_16_val(iphdr->Src),
+                         ip4_addr2_16_val(iphdr->Src),
+                         ip4_addr3_16_val(iphdr->Src),
+                         ip4_addr4_16_val(iphdr->Src)));
   LWIP_DEBUGF(IP_DEBUG, ("+-------------------------------+\n"));
   LWIP_DEBUGF(IP_DEBUG, ("|  %3"U16_F"  |  %3"U16_F"  |  %3"U16_F"  |  %3"U16_F"  | (dest)\n",
                          ip4_addr1_16_val(iphdr->dest),

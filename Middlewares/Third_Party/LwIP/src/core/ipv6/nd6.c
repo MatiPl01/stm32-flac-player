@@ -487,7 +487,7 @@ nd6_input(struct pbuf *p, struct netif *inp)
       return;
     }
 
-    /* Check for ANY address in src (DAD algorithm). */
+    /* Check for ANY address in Src (DAD algorithm). */
     if (ip6_addr_isany(ip6_current_src_addr())) {
       /* Sender is validating this address. */
       for (i = 0; i < LWIP_IPV6_NUM_ADDRESSES; ++i) {

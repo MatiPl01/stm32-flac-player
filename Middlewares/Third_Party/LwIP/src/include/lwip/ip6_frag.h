@@ -61,7 +61,7 @@ extern "C" {
  * ip6_reass_helper" is too large to be stored in the IPv6 fragment header, and
  * will bleed into the header before it, which may be the IPv6 header or an
  * extension header. This means that for each first fragment packet, we need to
- * 1) make a copy of some IPv6 header fields (src+dest) that we need later on,
+ * 1) make a copy of some IPv6 header fields (Src+dest) that we need later on,
  * just in case we do overwrite part of the IPv6 header, and 2) make a copy of
  * the header data that we overwrote, so that we can restore it before either
  * completing reassembly or sending an ICMPv6 reply. The last part is true even
@@ -77,10 +77,10 @@ extern "C" {
  * structure may still be in place. This is easier than temporarily restoring
  * those fields in the IP header each time we need to perform checks on them. */
 #if IPV6_FRAG_COPYHEADER
-#define IPV6_FRAG_SRC(ipr) ((ipr)->src)
+#define IPV6_FRAG_SRC(ipr) ((ipr)->Src)
 #define IPV6_FRAG_DEST(ipr) ((ipr)->dest)
 #else /* IPV6_FRAG_COPYHEADER */
-#define IPV6_FRAG_SRC(ipr) ((ipr)->iphdr->src)
+#define IPV6_FRAG_SRC(ipr) ((ipr)->iphdr->Src)
 #define IPV6_FRAG_DEST(ipr) ((ipr)->iphdr->dest)
 #endif /* IPV6_FRAG_COPYHEADER */
 
@@ -92,7 +92,7 @@ struct ip6_reassdata {
   struct pbuf *p;
   struct ip6_hdr *iphdr; /* pointer to the first (original) IPv6 header */
 #if IPV6_FRAG_COPYHEADER
-  ip6_addr_p_t src; /* copy of the source address in the IP header */
+  ip6_addr_p_t Src; /* copy of the source address in the IP header */
   ip6_addr_p_t dest; /* copy of the destination address in the IP header */
   /* This buffer (for the part of the original header that we overwrite) will
    * be slightly oversized, but we cannot compute the exact size from here. */

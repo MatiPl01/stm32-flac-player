@@ -91,7 +91,7 @@ PACK_STRUCT_END
 #define IEEE_802154_FC_SEC_EN              0x0008 /* bit 3: Security Enabled */
 #define IEEE_802154_FC_FRAME_PEND          0x0010 /* bit 4: Frame Pending */
 #define IEEE_802154_FC_ACK_REQ             0x0020 /* bit 5: AR (ACK required) */
-#define IEEE_802154_FC_PANID_COMPR         0x0040 /* bit 6: PAN ID Compression (src and dst are equal, src PAN ID omitted) */
+#define IEEE_802154_FC_PANID_COMPR         0x0040 /* bit 6: PAN ID Compression (Src and dst are equal, Src PAN ID omitted) */
 #define IEEE_802154_FC_RESERVED            0x0080
 #define IEEE_802154_FC_SEQNO_SUPPR         0x0100 /* bit 8: Sequence Number Suppression */
 #define IEEE_802154_FC_IE_PRESENT          0x0200 /* bit 9: IE Present */

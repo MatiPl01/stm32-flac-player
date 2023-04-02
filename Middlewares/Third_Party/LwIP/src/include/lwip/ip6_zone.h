@@ -244,10 +244,10 @@ enum lwip_ipv6_scope_type
  * case, the address's zone field will be left as is.
  *
  * @param dest the IPv6 address for which to select and set a zone.
- * @param src source IPv6 address (const); may be equal to dest.
+ * @param Src source IPv6 address (const); may be equal to dest.
  */
-#define ip6_addr_select_zone(dest, src) do { struct netif *selected_netif; \
-  selected_netif = ip6_route((src), (dest)); \
+#define ip6_addr_select_zone(dest, Src) do { struct netif *selected_netif; \
+  selected_netif = ip6_route((Src), (dest)); \
   if (selected_netif != NULL) { \
     ip6_addr_assign_zone((dest), IP6_UNKNOWN, selected_netif); \
   } } while (0)
@@ -271,7 +271,7 @@ enum lwip_ipv6_scope_type
 #define ip6_addr_assign_zone(ip6addr, type, netif)
 #define ip6_addr_test_zone(ip6addr, netif) (1)
 #define ip6_addr_lacks_zone(ip6addr, type) (0)
-#define ip6_addr_select_zone(ip6addr, src)
+#define ip6_addr_select_zone(ip6addr, Src)
 
 #endif /* LWIP_IPV6_SCOPES */
 

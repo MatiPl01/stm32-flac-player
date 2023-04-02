@@ -97,30 +97,30 @@ typedef struct ip6_addr ip6_addr_t;
 #define IP6_ADDR_BLOCK8(ip6addr) ((u16_t)((lwip_htonl((ip6addr)->addr[3])) & 0xffff))
 
 /** Copy IPv6 address - faster than ip6_addr_set: no NULL check */
-#define ip6_addr_copy(dest, src) do{(dest).addr[0] = (src).addr[0]; \
-                                    (dest).addr[1] = (src).addr[1]; \
-                                    (dest).addr[2] = (src).addr[2]; \
-                                    (dest).addr[3] = (src).addr[3]; \
-                                    ip6_addr_copy_zone((dest), (src)); }while(0)
-/** Safely copy one IPv6 address to another (src may be NULL) */
-#define ip6_addr_set(dest, src) do{(dest)->addr[0] = (src) == NULL ? 0 : (src)->addr[0]; \
-                                   (dest)->addr[1] = (src) == NULL ? 0 : (src)->addr[1]; \
-                                   (dest)->addr[2] = (src) == NULL ? 0 : (src)->addr[2]; \
-                                   (dest)->addr[3] = (src) == NULL ? 0 : (src)->addr[3]; \
-                                   ip6_addr_set_zone((dest), (src) == NULL ? IP6_NO_ZONE : ip6_addr_zone(src)); }while(0)
+#define ip6_addr_copy(dest, Src) do{(dest).addr[0] = (Src).addr[0]; \
+                                    (dest).addr[1] = (Src).addr[1]; \
+                                    (dest).addr[2] = (Src).addr[2]; \
+                                    (dest).addr[3] = (Src).addr[3]; \
+                                    ip6_addr_copy_zone((dest), (Src)); }while(0)
+/** Safely copy one IPv6 address to another (Src may be NULL) */
+#define ip6_addr_set(dest, Src) do{(dest)->addr[0] = (Src) == NULL ? 0 : (Src)->addr[0]; \
+                                   (dest)->addr[1] = (Src) == NULL ? 0 : (Src)->addr[1]; \
+                                   (dest)->addr[2] = (Src) == NULL ? 0 : (Src)->addr[2]; \
+                                   (dest)->addr[3] = (Src) == NULL ? 0 : (Src)->addr[3]; \
+                                   ip6_addr_set_zone((dest), (Src) == NULL ? IP6_NO_ZONE : ip6_addr_zone(Src)); }while(0)
 
 /** Copy packed IPv6 address to unpacked IPv6 address; zone is not set */
-#define ip6_addr_copy_from_packed(dest, src) do{(dest).addr[0] = (src).addr[0]; \
-                                    (dest).addr[1] = (src).addr[1]; \
-                                    (dest).addr[2] = (src).addr[2]; \
-                                    (dest).addr[3] = (src).addr[3]; \
+#define ip6_addr_copy_from_packed(dest, Src) do{(dest).addr[0] = (Src).addr[0]; \
+                                    (dest).addr[1] = (Src).addr[1]; \
+                                    (dest).addr[2] = (Src).addr[2]; \
+                                    (dest).addr[3] = (Src).addr[3]; \
                                     ip6_addr_clear_zone(&dest); }while(0)
 
 /** Copy unpacked IPv6 address to packed IPv6 address; zone is lost */
-#define ip6_addr_copy_to_packed(dest, src) do{(dest).addr[0] = (src).addr[0]; \
-                                    (dest).addr[1] = (src).addr[1]; \
-                                    (dest).addr[2] = (src).addr[2]; \
-                                    (dest).addr[3] = (src).addr[3]; }while(0)
+#define ip6_addr_copy_to_packed(dest, Src) do{(dest).addr[0] = (Src).addr[0]; \
+                                    (dest).addr[1] = (Src).addr[1]; \
+                                    (dest).addr[2] = (Src).addr[2]; \
+                                    (dest).addr[3] = (Src).addr[3]; }while(0)
 
 /** Set complete address to zero */
 #define ip6_addr_set_zero(ip6addr)    do{(ip6addr)->addr[0] = 0; \
@@ -139,11 +139,11 @@ typedef struct ip6_addr ip6_addr_t;
                                           ip6_addr_clear_zone(ip6addr);}while(0)
 /** Safely copy one IPv6 address to another and change byte order
  * from host- to network-order. */
-#define ip6_addr_set_hton(dest, src) do{(dest)->addr[0] = (src) == NULL ? 0 : lwip_htonl((src)->addr[0]); \
-                                        (dest)->addr[1] = (src) == NULL ? 0 : lwip_htonl((src)->addr[1]); \
-                                        (dest)->addr[2] = (src) == NULL ? 0 : lwip_htonl((src)->addr[2]); \
-                                        (dest)->addr[3] = (src) == NULL ? 0 : lwip_htonl((src)->addr[3]); \
-                                        ip6_addr_set_zone((dest), (src) == NULL ? IP6_NO_ZONE : ip6_addr_zone(src));}while(0)
+#define ip6_addr_set_hton(dest, Src) do{(dest)->addr[0] = (Src) == NULL ? 0 : lwip_htonl((Src)->addr[0]); \
+                                        (dest)->addr[1] = (Src) == NULL ? 0 : lwip_htonl((Src)->addr[1]); \
+                                        (dest)->addr[2] = (Src) == NULL ? 0 : lwip_htonl((Src)->addr[2]); \
+                                        (dest)->addr[3] = (Src) == NULL ? 0 : lwip_htonl((Src)->addr[3]); \
+                                        ip6_addr_set_zone((dest), (Src) == NULL ? IP6_NO_ZONE : ip6_addr_zone(Src));}while(0)
 
 
 /** Compare IPv6 networks, ignoring zone information. To be used sparingly! */

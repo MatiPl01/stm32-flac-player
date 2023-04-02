@@ -327,7 +327,7 @@ bridgeif_input(struct pbuf *p, struct netif *netif)
 {
   u8_t rx_idx;
   bridgeif_portmask_t dstports;
-  struct eth_addr *src, *dst;
+  struct eth_addr *Src, *dst;
   bridgeif_private_t *br;
   bridgeif_port_t *port;
   if (p == NULL || netif == NULL) {
@@ -344,11 +344,11 @@ bridgeif_input(struct pbuf *p, struct netif *netif)
   p->if_idx = rx_idx;
 
   dst = (struct eth_addr *)p->payload;
-  src = (struct eth_addr *)(((u8_t *)p->payload) + sizeof(struct eth_addr));
+  Src = (struct eth_addr *)(((u8_t *)p->payload) + sizeof(struct eth_addr));
 
-  if ((src->addr[0] & 1) == 0) {
-    /* update src for all non-group addresses */
-    bridgeif_fdb_update_src(br->fdbd, src, port->port_num);
+  if ((Src->addr[0] & 1) == 0) {
+    /* update Src for all non-group addresses */
+    bridgeif_fdb_update_src(br->fdbd, Src, port->port_num);
   }
 
   if (dst->addr[0] & 1) {

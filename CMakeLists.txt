@@ -1,7 +1,12 @@
-#THIS FILE IS AUTO GENERATED FROM THE TEMPLATE! DO NOT CHANGE!
 set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_SYSTEM_VERSION 1)
 cmake_minimum_required(VERSION 3.24)
+
+# include cmake macros used by libflac
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
+# set ogg support to ON by default
+option(WITH_OGG "ogg support (default: test for libogg)" ON)
 
 # specify cross-compilers and tools
 set(CMAKE_C_COMPILER arm-none-eabi-gcc)
@@ -49,6 +54,39 @@ else ()
     add_compile_options(-Og -g)
 endif ()
 
+if(NOT UNIX)
+    # This is to make sure testing works when building with a DLL
+    set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/objs)
+    set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/objs)
+endif()
+
+# try to find libogg
+if(WITH_OGG)
+    if(IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/ogg")
+        add_subdirectory("ogg")
+        set(OGG_FOUND 1 CACHE INTERNAL "ogg has been added as subdirectory")
+        set_target_properties(ogg PROPERTIES FOLDER Libraries)
+        if(BUILD_TESTING)
+            set_target_properties(test_bitwise test_framing PROPERTIES FOLDER Tests)
+        endif()
+    else()
+        if(NOT TARGET Ogg::ogg)
+            find_package(Ogg REQUIRED)
+        else()
+            set(OGG_FOUND 1 CACHE INTERNAL "ogg has already been built")
+        endif()
+        set(OGG_PACKAGE "ogg")
+    endif()
+endif()
+
+# Include macros used by libogg
+include(CheckCCompilerFlag)
+include(CheckFunctionExists)
+include(CheckIncludeFile)
+
+# add libflac
+add_subdirectory("Lib/libFLAC")
+
 include_directories(
     Core/Inc
     FATFS/Target
@@ -83,10 +121,8 @@ include_directories(
     Drivers/CMSIS/Include
     Drivers/BSP/STM32746G-Discovery
 
-    Lib/libflac
-    Lib/libflac/include
-    Lib/libflac/src/libFLAC/include
-
+    # Add custom libs
+    Lib/libFLAC/Inc
     Lib/player/Inc
 )
 

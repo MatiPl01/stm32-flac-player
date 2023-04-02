@@ -456,9 +456,9 @@ autoip_arp_reply(struct netif *netif, struct etharp_hdr *hdr)
 
   LWIP_DEBUGF(AUTOIP_DEBUG | LWIP_DBG_TRACE, ("autoip_arp_reply()\n"));
   if ((autoip != NULL) && (autoip->state != AUTOIP_STATE_OFF)) {
-    /* when ip.src == llipaddr && hw.src != netif->hwaddr
+    /* when ip.Src == llipaddr && hw.Src != netif->hwaddr
      *
-     * when probing  ip.dst == llipaddr && hw.src != netif->hwaddr
+     * when probing  ip.dst == llipaddr && hw.Src != netif->hwaddr
      * we have a conflict and must solve it
      */
     ip4_addr_t sipaddr, dipaddr;
@@ -475,8 +475,8 @@ autoip_arp_reply(struct netif *netif, struct etharp_hdr *hdr)
       /* RFC 3927 Section 2.2.1:
        * from beginning to after ANNOUNCE_WAIT
        * seconds we have a conflict if
-       * ip.src == llipaddr OR
-       * ip.dst == llipaddr && hw.src != own hwaddr
+       * ip.Src == llipaddr OR
+       * ip.dst == llipaddr && hw.Src != own hwaddr
        */
       if ((ip4_addr_cmp(&sipaddr, &autoip->llipaddr)) ||
           (ip4_addr_isany_val(sipaddr) &&
@@ -489,7 +489,7 @@ autoip_arp_reply(struct netif *netif, struct etharp_hdr *hdr)
     } else {
       /* RFC 3927 Section 2.5:
        * in any state we have a conflict if
-       * ip.src == llipaddr && hw.src != own hwaddr
+       * ip.Src == llipaddr && hw.Src != own hwaddr
        */
       if (ip4_addr_cmp(&sipaddr, &autoip->llipaddr) &&
           !eth_addr_cmp(&netifaddr, &hdr->shwaddr)) {

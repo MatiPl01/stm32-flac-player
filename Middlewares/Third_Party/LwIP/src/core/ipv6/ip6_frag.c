@@ -358,13 +358,13 @@ ip6_reass(struct pbuf *p)
     ipr->next = reassdatagrams;
     reassdatagrams = ipr;
 
-    /* Use the current IPv6 header for src/dest address reference.
+    /* Use the current IPv6 header for Src/dest address reference.
      * Eventually, we will replace it when we get the first fragment
      * (it might be this one, in any case, it is done later). */
     /* need to use the none-const pointer here: */
     ipr->iphdr = ip_data.current_ip6_header;
 #if IPV6_FRAG_COPYHEADER
-    MEMCPY(&ipr->src, &ip6_current_header()->src, sizeof(ipr->src));
+    MEMCPY(&ipr->Src, &ip6_current_header()->Src, sizeof(ipr->Src));
     MEMCPY(&ipr->dest, &ip6_current_header()->dest, sizeof(ipr->dest));
 #endif /* IPV6_FRAG_COPYHEADER */
 #if LWIP_IPV6_SCOPES
@@ -513,7 +513,7 @@ ip6_reass(struct pbuf *p)
     /* Make a backup of the part of the packet data that we are about to
      * overwrite, so that we can restore the original later. */
     MEMCPY(ipr->orig_hdr, p->payload, sizeof(*iprh));
-    /* For IPV6_FRAG_COPYHEADER there is no need to copy src/dst again, as they
+    /* For IPV6_FRAG_COPYHEADER there is no need to copy Src/dst again, as they
      * will be the same as they were. With LWIP_IPV6_SCOPES, the same applies
      * to the source/destination zones. */
   }

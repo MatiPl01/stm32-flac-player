@@ -2878,24 +2878,24 @@
 #endif
 
 /**
- * LWIP_HOOK_IP4_ROUTE_SRC(src, dest):
+ * LWIP_HOOK_IP4_ROUTE_SRC(Src, dest):
  * Source-based routing for IPv4 - called from ip_route() (IPv4)
  * Signature:\code{.c}
- *   struct netif *my_hook(const ip4_addr_t *src, const ip4_addr_t *dest);
+ *   struct netif *my_hook(const ip4_addr_t *Src, const ip4_addr_t *dest);
  * \endcode
  * Arguments:
- * - src: local/source IPv4 address
+ * - Src: local/source IPv4 address
  * - dest: destination IPv4 address
  * Returns values:
  * - the destination netif
  * - NULL if no destination netif is found. In that case, ip_route() continues as normal.
  */
 #ifdef __DOXYGEN__
-#define LWIP_HOOK_IP4_ROUTE_SRC(src, dest)
+#define LWIP_HOOK_IP4_ROUTE_SRC(Src, dest)
 #endif
 
 /**
- * LWIP_HOOK_IP4_CANFORWARD(src, dest):
+ * LWIP_HOOK_IP4_CANFORWARD(Src, dest):
  * Check if an IPv4 can be forwarded - called from:
  * ip4_input() -> ip4_forward() -> ip4_canforward() (IPv4)
  * - source address is available via ip4_current_src_addr()
@@ -2912,7 +2912,7 @@
  * - -1: no decision. In that case, ip4_canforward() continues as normal.
  */
 #ifdef __DOXYGEN__
-#define LWIP_HOOK_IP4_CANFORWARD(src, dest)
+#define LWIP_HOOK_IP4_CANFORWARD(Src, dest)
 #endif
 
 /**
@@ -2957,20 +2957,20 @@
 #endif
 
 /**
- * LWIP_HOOK_IP6_ROUTE(src, dest):
+ * LWIP_HOOK_IP6_ROUTE(Src, dest):
  * Called from ip_route() (IPv6)
  * Signature:\code{.c}
- *   struct netif *my_hook(const ip6_addr_t *dest, const ip6_addr_t *src);
+ *   struct netif *my_hook(const ip6_addr_t *dest, const ip6_addr_t *Src);
  * \endcode
  * Arguments:
- * - src: source IPv6 address
+ * - Src: source IPv6 address
  * - dest: destination IPv6 address
  * Return values:
  * - the destination netif
  * - NULL if no destination netif is found. In that case, ip6_route() continues as normal.
  */
 #ifdef __DOXYGEN__
-#define LWIP_HOOK_IP6_ROUTE(src, dest)
+#define LWIP_HOOK_IP6_ROUTE(Src, dest)
 #endif
 
 /**
@@ -3019,12 +3019,12 @@
  * on per-netif basis to implement this callback, see @ref netif_cd.
  * Called from ethernet_output() if VLAN support (@ref ETHARP_SUPPORT_VLAN) is enabled.\n
  * Signature:\code{.c}
- *   s32_t my_hook_vlan_set(struct netif* netif, struct pbuf* pbuf, const struct eth_addr* src, const struct eth_addr* dst, u16_t eth_type);\n
+ *   s32_t my_hook_vlan_set(struct netif* netif, struct pbuf* pbuf, const struct eth_addr* Src, const struct eth_addr* dst, u16_t eth_type);\n
  * \endcode
  * Arguments:
  * - netif: struct netif that the packet will be sent through
  * - p: struct pbuf packet to be sent
- * - src: source eth address
+ * - Src: source eth address
  * - dst: destination eth address
  * - eth_type: ethernet type to packet to be sent\n
  * 
@@ -3034,7 +3034,7 @@
  * - 0 &lt;= return value &lt;= 0xFFFF: Packet shall contain VLAN header. Return value is prio_vid in host byte order.
  */
 #ifdef __DOXYGEN__
-#define LWIP_HOOK_VLAN_SET(netif, p, src, dst, eth_type)
+#define LWIP_HOOK_VLAN_SET(netif, p, Src, dst, eth_type)
 #endif
 
 /**

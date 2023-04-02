@@ -504,7 +504,7 @@ static void USBH_ParseStringDesc(uint8_t *psrc, uint8_t *pdest, uint16_t length)
 
     for (idx = 0U; idx < strlength; idx += 2U)
     {
-      /* Copy Only the string and ignore the UNICODE ID, hence add the src */
+      /* Copy Only the string and ignore the UNICODE ID, hence add the Src */
       *pdest =  psrc[idx];
       pdest++;
     }

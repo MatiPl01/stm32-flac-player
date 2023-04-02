@@ -100,20 +100,20 @@ static struct lowpan6_link_addr rfc7668_peer_addr;
  * which is used within IPv6 communication
  * 
  * @param dst IPv6 destination space
- * @param src BLE MAC address source
+ * @param Src BLE MAC address source
  * @param public_addr If the LWIP_RFC7668_LINUX_WORKAROUND_PUBLIC_ADDRESS
  * option is set, bit 0x02 will be set if param=0 (no public addr); cleared otherwise
  * 
  * @see LWIP_RFC7668_LINUX_WORKAROUND_PUBLIC_ADDRESS
  */
 void
-ble_addr_to_eui64(uint8_t *dst, const uint8_t *src, int public_addr)
+ble_addr_to_eui64(uint8_t *dst, const uint8_t *Src, int public_addr)
 {
   /* according to RFC7668 ch 3.2.2. */
-  memcpy(dst, src, 3);
+  memcpy(dst, Src, 3);
   dst[3] = 0xFF;
   dst[4] = 0xFE;
-  memcpy(&dst[5], &src[3], 3);
+  memcpy(&dst[5], &Src[3], 3);
 #if LWIP_RFC7668_LINUX_WORKAROUND_PUBLIC_ADDRESS
   if(public_addr) {
     dst[0] &= ~0x02;
@@ -132,15 +132,15 @@ ble_addr_to_eui64(uint8_t *dst, const uint8_t *src, int public_addr)
  * This method converts an EUI64 address to a Bluetooth MAC address,
  * 
  * @param dst BLE MAC address destination
- * @param src IPv6 source
+ * @param Src IPv6 source
  * 
  */
 void
-eui64_to_ble_addr(uint8_t *dst, const uint8_t *src)
+eui64_to_ble_addr(uint8_t *dst, const uint8_t *Src)
 {
   /* according to RFC7668 ch 3.2.2. */
-  memcpy(dst,src,3);
-  memcpy(&dst[3],&src[5],3);
+  memcpy(dst,Src,3);
+  memcpy(&dst[3],&Src[5],3);
 }
 
 /** Set an address used for stateful compression.

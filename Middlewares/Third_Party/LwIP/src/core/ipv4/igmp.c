@@ -101,7 +101,7 @@ static err_t  igmp_remove_group(struct netif *netif, struct igmp_group *group);
 static void   igmp_timeout(struct netif *netif, struct igmp_group *group);
 static void   igmp_start_timer(struct igmp_group *group, u8_t max_time);
 static void   igmp_delaying_member(struct igmp_group *group, u8_t maxresp);
-static err_t  igmp_ip_output_if(struct pbuf *p, const ip4_addr_t *src, const ip4_addr_t *dest, struct netif *netif);
+static err_t  igmp_ip_output_if(struct pbuf *p, const ip4_addr_t *Src, const ip4_addr_t *dest, struct netif *netif);
 static void   igmp_send(struct netif *netif, struct igmp_group *group, u8_t type);
 
 static ip4_addr_t     allsystems;
@@ -337,7 +337,7 @@ igmp_input(struct pbuf *p, struct netif *inp, const ip4_addr_t *dest)
   }
 
   LWIP_DEBUGF(IGMP_DEBUG, ("igmp_input: message from "));
-  ip4_addr_debug_print_val(IGMP_DEBUG, ip4_current_header()->src);
+  ip4_addr_debug_print_val(IGMP_DEBUG, ip4_current_header()->Src);
   LWIP_DEBUGF(IGMP_DEBUG, (" to address "));
   ip4_addr_debug_print_val(IGMP_DEBUG, ip4_current_header()->dest);
   LWIP_DEBUGF(IGMP_DEBUG, (" on if %p\n", (void *)inp));
@@ -729,7 +729,7 @@ igmp_delaying_member(struct igmp_group *group, u8_t maxresp)
  * @param p the packet to send (p->payload points to the data, e.g. next
             protocol header; if dest == LWIP_IP_HDRINCL, p already includes an
             IP header and p->payload points to that IP header)
- * @param src the source IP address to send from (if src == IP4_ADDR_ANY, the
+ * @param Src the source IP address to send from (if Src == IP4_ADDR_ANY, the
  *         IP  address of the netif used to send is used as source address)
  * @param dest the destination IP address to send the packet to
  * @param netif the netif on which to send this packet
@@ -738,14 +738,14 @@ igmp_delaying_member(struct igmp_group *group, u8_t maxresp)
  *         returns errors returned by netif->output
  */
 static err_t
-igmp_ip_output_if(struct pbuf *p, const ip4_addr_t *src, const ip4_addr_t *dest, struct netif *netif)
+igmp_ip_output_if(struct pbuf *p, const ip4_addr_t *Src, const ip4_addr_t *dest, struct netif *netif)
 {
   /* This is the "router alert" option */
   u16_t ra[2];
   ra[0] = PP_HTONS(ROUTER_ALERT);
   ra[1] = 0x0000; /* Router shall examine packet */
   IGMP_STATS_INC(igmp.xmit);
-  return ip4_output_if_opt(p, src, dest, IGMP_TTL, 0, IP_PROTO_IGMP, netif, ra, ROUTER_ALERTLEN);
+  return ip4_output_if_opt(p, Src, dest, IGMP_TTL, 0, IP_PROTO_IGMP, netif, ra, ROUTER_ALERTLEN);
 }
 
 /**
@@ -759,7 +759,7 @@ igmp_send(struct netif *netif, struct igmp_group *group, u8_t type)
 {
   struct pbuf     *p    = NULL;
   struct igmp_msg *igmp = NULL;
-  ip4_addr_t   src  = *IP4_ADDR_ANY4;
+  ip4_addr_t   Src  = *IP4_ADDR_ANY4;
   ip4_addr_t  *dest = NULL;
 
   /* IP header + "router alert" option + IGMP header */
@@ -769,7 +769,7 @@ igmp_send(struct netif *netif, struct igmp_group *group, u8_t type)
     igmp = (struct igmp_msg *)p->payload;
     LWIP_ASSERT("igmp_send: check that first pbuf can hold struct igmp_msg",
                 (p->len >= sizeof(struct igmp_msg)));
-    ip4_addr_copy(src, *netif_ip4_addr(netif));
+    ip4_addr_copy(Src, *netif_ip4_addr(netif));
 
     if (type == IGMP_V2_MEMB_REPORT) {
       dest = &(group->group_address);
@@ -788,7 +788,7 @@ igmp_send(struct netif *netif, struct igmp_group *group, u8_t type)
       igmp->igmp_checksum = 0;
       igmp->igmp_checksum = inet_chksum(igmp, IGMP_MINLEN);
 
-      igmp_ip_output_if(p, &src, dest, netif);
+      igmp_ip_output_if(p, &Src, dest, netif);
     }
 
     pbuf_free(p);

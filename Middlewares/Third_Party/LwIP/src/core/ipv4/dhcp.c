@@ -237,7 +237,7 @@ dhcp_inc_pcb_refcount(void)
 
     ip_set_option(dhcp_pcb, SOF_BROADCAST);
 
-    /* set up local and remote port for the pcb -> listen on all interfaces on all src/dest IPs */
+    /* set up local and remote port for the pcb -> listen on all interfaces on all Src/dest IPs */
     udp_bind(dhcp_pcb, IP4_ADDR_ANY, LWIP_IANA_PORT_DHCP_CLIENT);
     udp_connect(dhcp_pcb, IP4_ADDR_ANY, LWIP_IANA_PORT_DHCP_SERVER);
     udp_recv(dhcp_pcb, dhcp_recv, NULL);

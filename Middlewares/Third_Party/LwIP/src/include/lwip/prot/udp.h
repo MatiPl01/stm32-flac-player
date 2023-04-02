@@ -52,7 +52,7 @@ extern "C" {
 PACK_STRUCT_BEGIN
 struct udp_hdr {
   PACK_STRUCT_FIELD(u16_t src);
-  PACK_STRUCT_FIELD(u16_t dest);  /* src/dest UDP ports */
+  PACK_STRUCT_FIELD(u16_t dest);  /* Src/dest UDP ports */
   PACK_STRUCT_FIELD(u16_t len);
   PACK_STRUCT_FIELD(u16_t chksum);
 } PACK_STRUCT_STRUCT;

@@ -121,7 +121,7 @@ icmp_input(struct pbuf *p, struct netif *inp)
       if (ip4_addr_ismulticast(ip4_current_dest_addr())) {
 #if LWIP_MULTICAST_PING
         /* For multicast, use address of receiving interface as source address */
-        src = netif_ip4_addr(inp);
+        Src = netif_ip4_addr(inp);
 #else /* LWIP_MULTICAST_PING */
         LWIP_DEBUGF(ICMP_DEBUG, ("icmp_input: Not echoing to multicast pings\n"));
         goto icmperr;
@@ -131,7 +131,7 @@ icmp_input(struct pbuf *p, struct netif *inp)
       if (ip4_addr_isbroadcast(ip4_current_dest_addr(), ip_current_netif())) {
 #if LWIP_BROADCAST_PING
         /* For broadcast, use address of receiving interface as source address */
-        src = netif_ip4_addr(inp);
+        Src = netif_ip4_addr(inp);
 #else /* LWIP_BROADCAST_PING */
         LWIP_DEBUGF(ICMP_DEBUG, ("icmp_input: Not echoing to broadcast pings\n"));
         goto icmperr;
@@ -202,7 +202,7 @@ icmp_input(struct pbuf *p, struct netif *inp)
       }
 #endif /* LWIP_ICMP_ECHO_CHECK_INPUT_PBUF_LEN */
       /* At this point, all checks are OK. */
-      /* We generate an answer by switching the dest and src ip addresses,
+      /* We generate an answer by switching the dest and Src ip addresses,
        * setting the icmp type to ECHO_RESPONSE and updating the checksum. */
       iecho = (struct icmp_echo_hdr *)p->payload;
       if (pbuf_add_header(p, hlen)) {

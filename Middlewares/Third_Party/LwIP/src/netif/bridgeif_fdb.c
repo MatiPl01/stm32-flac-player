@@ -66,7 +66,7 @@ typedef struct bridgeif_dfdb_s {
 /**
  * @ingroup bridgeif_fdb
  * A real simple and slow implementation of an auto-learning forwarding database that
- * remembers known src mac addresses to know which port to send frames destined for that
+ * remembers known Src mac addresses to know which port to send frames destined for that
  * mac address.
  *
  * ATTENTION: This is meant as an example only, in real-world use, you should 
@@ -83,7 +83,7 @@ bridgeif_fdb_update_src(void *fdb_ptr, struct eth_addr *src_addr, u8_t port_idx)
     bridgeif_dfdb_entry_t *e = &fdb->fdb[i];
     if (e->used && e->ts) {
       if (!memcmp(&e->addr, src_addr, sizeof(struct eth_addr))) {
-        LWIP_DEBUGF(BRIDGEIF_FDB_DEBUG, ("br: update src %02x:%02x:%02x:%02x:%02x:%02x (from %d) @ idx %d\n",
+        LWIP_DEBUGF(BRIDGEIF_FDB_DEBUG, ("br: update Src %02x:%02x:%02x:%02x:%02x:%02x (from %d) @ idx %d\n",
                                          src_addr->addr[0], src_addr->addr[1], src_addr->addr[2], src_addr->addr[3], src_addr->addr[4], src_addr->addr[5],
                                          port_idx, i));
         BRIDGEIF_WRITE_PROTECT(lev);
@@ -102,7 +102,7 @@ bridgeif_fdb_update_src(void *fdb_ptr, struct eth_addr *src_addr, u8_t port_idx)
       BRIDGEIF_WRITE_PROTECT(lev);
       /* check again when protected */
       if (!e->used || !e->ts) {
-        LWIP_DEBUGF(BRIDGEIF_FDB_DEBUG, ("br: create src %02x:%02x:%02x:%02x:%02x:%02x (from %d) @ idx %d\n",
+        LWIP_DEBUGF(BRIDGEIF_FDB_DEBUG, ("br: create Src %02x:%02x:%02x:%02x:%02x:%02x (from %d) @ idx %d\n",
                                          src_addr->addr[0], src_addr->addr[1], src_addr->addr[2], src_addr->addr[3], src_addr->addr[4], src_addr->addr[5],
                                          port_idx, i));
         memcpy(&e->addr, src_addr, sizeof(struct eth_addr));

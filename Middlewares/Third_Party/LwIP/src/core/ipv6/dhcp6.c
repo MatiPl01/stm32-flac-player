@@ -150,7 +150,7 @@ dhcp6_inc_pcb_refcount(void)
 
     ip_set_option(dhcp6_pcb, SOF_BROADCAST);
 
-    /* set up local and remote port for the pcb -> listen on all interfaces on all src/dest IPs */
+    /* set up local and remote port for the pcb -> listen on all interfaces on all Src/dest IPs */
     udp_bind(dhcp6_pcb, IP6_ADDR_ANY, DHCP6_CLIENT_PORT);
     udp_recv(dhcp6_pcb, dhcp6_recv, NULL);
   }

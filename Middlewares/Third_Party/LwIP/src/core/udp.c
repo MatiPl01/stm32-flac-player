@@ -230,7 +230,7 @@ udp_input(struct pbuf *p, struct netif *inp)
 
   LWIP_DEBUGF(UDP_DEBUG, ("udp_input: received datagram of length %"U16_F"\n", p->tot_len));
 
-  /* convert src and dest ports to host byte order */
+  /* convert Src and dest ports to host byte order */
   src = lwip_ntohs(udphdr->src);
   dest = lwip_ntohs(udphdr->dest);
 
@@ -390,7 +390,7 @@ udp_input(struct pbuf *p, struct netif *inp)
                 struct pbuf *q;
                 q = pbuf_clone(PBUF_RAW, PBUF_POOL, p);
                 if (q != NULL) {
-                  mpcb->recv(mpcb->recv_arg, mpcb, q, ip_current_src_addr(), src);
+                  mpcb->recv(mpcb->recv_arg, mpcb, q, ip_current_src_addr(), Src);
                 }
               }
             }
@@ -1302,8 +1302,8 @@ udp_debug_print(struct udp_hdr *udphdr)
 {
   LWIP_DEBUGF(UDP_DEBUG, ("UDP header:\n"));
   LWIP_DEBUGF(UDP_DEBUG, ("+-------------------------------+\n"));
-  LWIP_DEBUGF(UDP_DEBUG, ("|     %5"U16_F"     |     %5"U16_F"     | (src port, dest port)\n",
-                          lwip_ntohs(udphdr->src), lwip_ntohs(udphdr->dest)));
+  LWIP_DEBUGF(UDP_DEBUG, ("|     %5"U16_F"     |     %5"U16_F"     | (Src port, dest port)\n",
+                          lwip_ntohs(udphdr->Src), lwip_ntohs(udphdr->dest)));
   LWIP_DEBUGF(UDP_DEBUG, ("+-------------------------------+\n"));
   LWIP_DEBUGF(UDP_DEBUG, ("|     %5"U16_F"     |     0x%04"X16_F"    | (len, chksum)\n",
                           lwip_ntohs(udphdr->len), lwip_ntohs(udphdr->chksum)));

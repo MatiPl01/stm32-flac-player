@@ -105,7 +105,7 @@ struct netif;
 
 /** Copy IP address - faster than ip4_addr_set: no NULL check */
 #define ip4_addr_copy(dest, src) ((dest).addr = (src).addr)
-/** Safely copy one IP address to another (src may be NULL) */
+/** Safely copy one IP address to another (Src may be NULL) */
 #define ip4_addr_set(dest, src) ((dest)->addr = \
                                     ((src) == NULL ? 0 : \
                                     (src)->addr))
