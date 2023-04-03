@@ -96,7 +96,7 @@ file(GLOB_RECURSE SOURCES "USB_HOST/*.*" "Core/*.*" "Lib/Player/*.*" "FATFS/*.*"
         "Lib/libflac/src/libFLAC/format.c" "Lib/libflac/src/libFLAC/bitwriter.c" "Lib/libflac/src/libFLAC/crc.c"
         "Lib/libflac/src/libFLAC/lpc.c" "Lib/libflac/src/libFLAC/md5.c" "Lib/libflac/src/libFLAC/memory.c" "Lib/libflac/src/libFLAC/fixed.c" )
 
-set(LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/STM32F746NGHX_FLASH.ld)
+set(LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/STM32F746NGHX_FLASH.ld Lib/Player/Inc/flac_reader.h Lib/Player/Src/flac_reader.c)
 
 add_link_options(-Wl,-gc-sections,--print-memory-usage,-Map=${PROJECT_BINARY_DIR}/${PROJECT_NAME}.map)
 add_link_options(-mcpu=cortex-m7 -mthumb -mthumb-interwork)

@@ -8,7 +8,7 @@ static FileList file_list;
 void controller_task(void) {
     log_info("FLAC player starts");
 
-    wait_for_sd_card();
+//    wait_for_sd_card();
 
     // TODO - debug this function
 //    if (find_FLAC_files("0:", &file_list) == 1) {

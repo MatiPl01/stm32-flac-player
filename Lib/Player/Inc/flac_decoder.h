@@ -5,6 +5,8 @@
 #include "FLAC/stream_decoder.h"
 #include "ff.h"
 #include <stdlib.h>
+#include "logger.h"
+#include <stdbool.h>
 
 typedef struct {
     uint64_t total_samples;
@@ -14,16 +16,28 @@ typedef struct {
 } FlacMetaData;
 
 typedef struct {
-    int samples;
-    int size;
-    uint8_t* buffer;
+    unsigned samples;
+    unsigned size;
+    uint8_t *buffer;
 } FlacFrame;
 
 typedef struct {
-    FLAC__StreamDecoder* decoder;
-    FlacMetaData meta_data;
-    FlacFrame* frames;
+    FLAC__StreamDecoder *decoder;
+    FlacMetaData metadata;
+    FlacFrame *frame;
     FIL file;
 } Flac;
+
+Flac *create_flac(FIL *input);
+
+void destroy_flac(Flac *flac);
+
+bool read_metadata(Flac *flac, FlacMetaData *metadata);
+
+bool read_frame(Flac *flac, FlacFrame *frame);
+
+void free_frame(FlacFrame *frame);
+
+void free_metadata(FlacMetaData *metadata);
 
 #endif //STM32_FLAC_PLAYER_FLAC_DECODER_H
