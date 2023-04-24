@@ -30,6 +30,12 @@ int find_FLAC_files(const char *dir_path, FileList *file_list) {
             }
         } else {
             if (file_info.fattrib & AM_ARC) {
+                // check if filename has .flac extension
+                char *extension = strrchr(file_info.fname, '.');
+                if (extension == NULL || strcmp(extension, ".flac") != 0) {
+                    continue;
+                }
+
                 log_info("Found file %s", file_info.fname);
                 strcpy(file_list->files[file_list->count].path, dir_path);
                 strcat(file_list->files[file_list->count].path, "/");
@@ -39,8 +45,23 @@ int find_FLAC_files(const char *dir_path, FileList *file_list) {
         }
     }
 
+    if (file_list->count != 0) {
+        log_success("Found %d FLAC files in %s", file_list->count, dir_path);
+    }
     f_closedir(&dir);
-    log_success("Found %d FLAC files in %s", file_list->count, dir_path);
+
+    return 0;
+}
+
+int open_file(const char *file_path, FIL *file) {
+    log_info("Opening file %s", file_path);
+
+    if (f_open(file, file_path, FA_READ) != FR_OK) {
+        log_error("Failed to open file %s", file_path);
+        return 1;
+    }
+
+    log_success("File %s opened", file_path);
     return 0;
 }
 

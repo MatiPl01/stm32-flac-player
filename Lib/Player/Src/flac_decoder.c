@@ -14,7 +14,7 @@ static FLAC__StreamDecoderReadStatus decoder_read_callback(
     Flac *flac = (Flac *) client_data;
 
     UINT bytes_read;
-    if (f_read(&flac->file, buffer, *bytes, &bytes_read) != FR_OK) {
+    if (f_read(flac->file, buffer, *bytes, &bytes_read) != FR_OK) {
         log_error("Could not read from file");
         return FLAC__STREAM_DECODER_READ_STATUS_ABORT;
     }
@@ -44,7 +44,7 @@ static FLAC__StreamDecoderWriteStatus decoder_write_callback(
     }
 
     *flac->frame = (FlacFrame) {
-        .buffer = (uint8_t *) buffer, // TODO - Check if this is correct
+        .buffer = (uint16_t *) buffer, // TODO - Check if this is correct
         .samples = frame->header.blocksize,
         .size = frame->header.blocksize * frame->header.channels * sizeof(FLAC__int32)
     };
@@ -126,34 +126,34 @@ void destroy_flac(Flac *flac) {
     }
 }
 
-bool read_metadata(Flac *flac, FlacMetaData *metadata) {
+int read_metadata(Flac *flac, FlacMetaData *metadata) {
     if (FLAC__stream_decoder_process_until_end_of_metadata(flac->decoder)) {
         *metadata = flac->metadata;
-        return true;
+        return 0;
     } else {
         log_error("Could not read metadata %s",
                   FLAC__StreamDecoderStateString[FLAC__stream_decoder_get_state(flac->decoder)]);
-        return false;
+        return 1;
     }
 }
 
-bool read_frame(Flac *flac, FlacFrame *frame) {
+int read_frame(Flac *flac, FlacFrame *frame) {
     unsigned int t = xTaskGetTickCount();
 
     if (FLAC__stream_decoder_process_single(flac->decoder)) {
         if (flac->frame == NULL) {
-            return false;
+            return 1;
         }
         *frame = *flac->frame;
 
         t = xTaskGetTickCount() - t;
         log_debug("read_frame read frame with size %d in %d ms", frame->size, t);
 
-        return true;
+        return 0;
     } else {
         log_error("Could not read frame %s",
                   FLAC__StreamDecoderStateString[FLAC__stream_decoder_get_state(flac->decoder)]);
-        return false;
+        return 1;
     }
 }
 

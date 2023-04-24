@@ -2,7 +2,6 @@
 #define STM32_FLAC_PLAYER_FLAC_READER_H
 
 #include "flac_decoder.h"
-#include "logger.h"
 
 typedef struct {
     Flac* flac;
@@ -12,6 +11,6 @@ typedef struct {
 
 FlacReader *create_flac_reader(Flac *flac);
 void free_flac_reader(FlacReader *reader);
-unsigned read_flac(FlacReader *reader, uint8_t *buffer, unsigned size);
+unsigned read_flac(FlacReader *reader, uint16_t  *buffer, unsigned size);
 
 #endif //STM32_FLAC_PLAYER_FLAC_READER_H

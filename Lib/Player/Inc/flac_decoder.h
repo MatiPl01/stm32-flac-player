@@ -18,23 +18,23 @@ typedef struct {
 typedef struct {
     unsigned samples;
     unsigned size;
-    uint8_t *buffer;
+    uint16_t *buffer;
 } FlacFrame;
 
 typedef struct {
     FLAC__StreamDecoder *decoder;
     FlacMetaData metadata;
     FlacFrame *frame;
-    FIL file;
+    FIL *file;
 } Flac;
 
 Flac *create_flac(FIL *input);
 
 void destroy_flac(Flac *flac);
 
-bool read_metadata(Flac *flac, FlacMetaData *metadata);
+int read_metadata(Flac *flac, FlacMetaData *metadata);
 
-bool read_frame(Flac *flac, FlacFrame *frame);
+int read_frame(Flac *flac, FlacFrame *frame);
 
 void free_frame(FlacFrame *frame);
 
