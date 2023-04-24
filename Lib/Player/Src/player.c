@@ -2,7 +2,7 @@
 #include "player.h"
 #include "files.h"
 
-static uint16_t audio_buffer[AUDIO_BUFFER_SIZE];
+static uint8_t audio_buffer[AUDIO_BUFFER_SIZE];
 static uint8_t audio_buffer_state = BUFFER_OFFSET_NONE;
 static unsigned last_audio_buffer_state_change_time = 0;
 
@@ -14,9 +14,23 @@ static Flac *flac;
 static FlacReader *flac_reader;
 static FlacMetaData *flac_metadata;
 
+void BSP_AUDIO_OUT_HalfTransfer_CallBack(void) {
+    audio_buffer_state = BUFFER_OFFSET_HALF;
+    unsigned t = osKernelSysTick();
+    log_debug("[%u] TransferredFirstHalf (%u)\n", t, t - last_audio_buffer_state_change_time);
+    last_audio_buffer_state_change_time = t;
+}
+
+void BSP_AUDIO_OUT_TransferComplete_CallBack(void) {
+    audio_buffer_state = BUFFER_OFFSET_FULL;
+    unsigned t = osKernelSysTick();
+    log_debug("[%u] TransferredSecondHalf (%u)\n", t, t - last_audio_buffer_state_change_time);
+    last_audio_buffer_state_change_time = t;
+}
+
 void initialize_codec(void) {
     log_info("Initializing audio codec");
-    if (BSP_AUDIO_OUT_Init(OUTPUT_DEVICE_HEADPHONE1, 60, AUDIO_FREQUENCY_44K) == 0) {
+    if (BSP_AUDIO_OUT_Init(OUTPUT_DEVICE_HEADPHONE1, 10, AUDIO_FREQUENCY_44K) == 0) {
         log_success("Audio codec was successfully initialized");
     } else {
         log_error("Failed to initialize audio codec");

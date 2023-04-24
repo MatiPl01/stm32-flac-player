@@ -1431,14 +1431,6 @@ static void http_server_netconn_thread(void const *arg)
 }
 #endif
 
-void BSP_AUDIO_OUT_TransferComplete_CallBack(void) {
-    buf_offs = BUFFER_OFFSET_FULL;
-}
-
-void BSP_AUDIO_OUT_HalfTransfer_CallBack(void) {
-    buf_offs = BUFFER_OFFSET_HALF;
-}
-
 int GetPlaylistItemName(int item, char *itemName) {
     if (strlen(&fileListBuf[item][0]) == 0) {
         xprintf("GetPlaylistItemName: playlist probably empty\n");

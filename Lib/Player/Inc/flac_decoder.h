@@ -18,7 +18,7 @@ typedef struct {
 typedef struct {
     unsigned samples;
     unsigned size;
-    uint16_t *buffer;
+    uint8_t *buffer;
 } FlacFrame;
 
 typedef struct {

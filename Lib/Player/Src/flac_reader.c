@@ -16,7 +16,7 @@ void free_flac_reader(FlacReader *reader) {
     free(reader);
 }
 
-unsigned read_flac(FlacReader *reader, uint16_t *buffer, unsigned size) {
+unsigned read_flac(FlacReader *reader, uint8_t *buffer, unsigned size) {
     log_debug("Reading %d bytes from flac", size);
     unsigned bytes_read = 0;
 
@@ -34,8 +34,8 @@ unsigned read_flac(FlacReader *reader, uint16_t *buffer, unsigned size) {
         unsigned bytes_to_read = reader->frame->size - reader->buffer_index;
         unsigned bytes_left = size - bytes_read;
 
-        log_debug("Frame size: %d, Buffer index: %d, Bytes to read: %d, Bytes left: %d",
-                  reader->frame->size, reader->buffer_index, bytes_to_read, bytes_left);
+        log_debug("Bytes read: %d, Frame size: %d, Buffer index: %d, Bytes to read: %d, Bytes left: %d",
+                  bytes_read, reader->frame->size, reader->buffer_index, bytes_to_read, bytes_left);
 
         if (bytes_to_read > bytes_left) {
             memcpy(buffer + bytes_read, reader->frame->buffer + reader->buffer_index, bytes_left);

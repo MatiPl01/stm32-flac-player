@@ -1,4 +1,5 @@
 #include <flac_decoder.h>
+#include "term_io.h"
 
 static FLAC__StreamDecoderReadStatus decoder_read_callback(
         const FLAC__StreamDecoder *decoder,
@@ -39,15 +40,35 @@ static FLAC__StreamDecoderWriteStatus decoder_write_callback(
 
     Flac *flac = (Flac *) client_data;
 
-    if (flac->frame == NULL) {
-        flac->frame = (FlacFrame *) calloc(frame->header.blocksize, sizeof(FlacFrame));
+    for (int i = 0; i < frame->header.channels; i++) {
+        if (buffer[i] == NULL) {
+            log_error("buffer[%d] is NULL\n", i);
+            return FLAC__STREAM_DECODER_WRITE_STATUS_ABORT;
+        }
     }
 
+    unsigned samples = frame->header.blocksize;
+    unsigned channels = frame->header.channels;
+    unsigned bytes_per_sample = frame->header.bits_per_sample / 8;
+    unsigned size = samples * channels * bytes_per_sample;
+
+    flac->frame = malloc(sizeof(FlacFrame));
     *flac->frame = (FlacFrame) {
-        .buffer = (uint16_t *) buffer, // TODO - Check if this is correct
-        .samples = frame->header.blocksize,
-        .size = frame->header.blocksize * frame->header.channels * sizeof(FLAC__int32)
+        .buffer = malloc(size),
+        .size = size
     };
+
+    log_debug("samples: %d, channels: %d, bytes_per_sample: %d, buffer_size: %d\n",
+              samples, channels, bytes_per_sample, size);
+
+    for (int sample = 0; sample < samples; sample++) {
+        for (int channel = 0; channel < channels; channel++) {
+            for (int byte = 0; byte < bytes_per_sample; byte++) {
+                flac->frame->buffer[(sample * channels + channel) * bytes_per_sample + byte] =
+                        (uint8_t)((buffer[channel][sample] >> (byte * 8)) & 0xFF);
+            }
+        }
+    }
 
     return FLAC__STREAM_DECODER_WRITE_STATUS_CONTINUE;
 }
@@ -95,16 +116,17 @@ Flac *create_flac(FIL *input) {
         return NULL;
     }
 
+    // TODO - check if these & are required
     FLAC__StreamDecoderInitStatus init_status = FLAC__stream_decoder_init_stream(
             flac->decoder,
-            decoder_read_callback,
+            &decoder_read_callback,
             NULL,
             NULL,
             NULL,
             NULL,
-            decoder_write_callback,
-            decoder_metadata_callback,
-            decoder_error_callback,
+            &decoder_write_callback,
+            &decoder_metadata_callback,
+            &decoder_error_callback,
             flac
     );
 
@@ -142,9 +164,11 @@ int read_frame(Flac *flac, FlacFrame *frame) {
 
     if (FLAC__stream_decoder_process_single(flac->decoder)) {
         if (flac->frame == NULL) {
+            log_error("No frame read");
             return 1;
         }
         *frame = *flac->frame;
+        flac->frame = NULL;
 
         t = xTaskGetTickCount() - t;
         log_debug("read_frame read frame with size %d in %d ms", frame->size, t);

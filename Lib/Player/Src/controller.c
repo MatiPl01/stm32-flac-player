@@ -5,7 +5,7 @@
 #include "player.h"
 
 static FileList file_list;
-static uint8_t current_file_index = 0;
+static uint8_t current_file_index = 6;
 
 static const char* get_current_file_path(void) {
     static char path[MAX_FILE_PATH_LENGTH + 1];
@@ -15,7 +15,6 @@ static const char* get_current_file_path(void) {
 
 void controller_task(void) {
     set_debug_mode(true);
-
     log_info("FLAC player starts");
 
     wait_for_sd_card();
