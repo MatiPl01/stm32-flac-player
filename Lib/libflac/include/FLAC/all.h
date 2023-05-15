@@ -109,7 +109,7 @@
  * classes.
  *
  * From there you can go on to look at the documentation of
- * individual functions.  You can see different views of the individual
+ * individual functions.  You can see different screens of the individual
  * functions through the links in top bar across this page.
  *
  * If you prefer a more hands-on approach, you can jump right to some

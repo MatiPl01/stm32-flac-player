@@ -18,12 +18,12 @@ typedef enum {
 
 #define AUDIO_BUFFER_SIZE 32768
 
-void initialize_codec();
+void initialize_codec(void);
 void start_player(const char* file_path);
-void pause_player();
-void resume_player();
-void stop_player();
-void update_player();
-
+void pause_player(void);
+void resume_player(void);
+void stop_player(void);
+void update_player(void);
+double get_playing_progress(void);
 
 #endif //STM32_FLAC_PLAYER_PLAYER_H

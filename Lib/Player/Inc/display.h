@@ -16,9 +16,10 @@ typedef struct {
     bool is_touched;
 } Button;
 
-void load_screen();
+void initialize_screen();
 
-void render_text();
+void render_text(const char *text, int x, int y, sFONT *font, uint32_t color, uint32_t background_color,
+                 Text_AlignModeTypdef alignment);
 
 void handle_touch();
 
@@ -28,5 +29,10 @@ void draw_polygon(Point center_position, const Point *icon_points, uint16_t icon
 
 void
 transform_points(Point center_position, const Point *icon_points, uint16_t points_count, Point *transformed_points);
+
+void render_info_screen(const char *info, const char *sub_info);
+
+void render_track_screen(const char *track_name, const char *artist_name, int total_files_count, int current_file_index,
+                         double progress, double duration, bool is_playing);
 
 #endif //STM32_FLAC_PLAYER_DISPLAY_H

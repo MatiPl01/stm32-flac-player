@@ -1,9 +1,9 @@
 #include "stm32746g_discovery_lcd.h"
 #include "stm32746g_discovery_ts.h"
 #include "cmsis_os.h"
-#include "term_io.h"
 
 #include "display.h"
+#include "player.h"
 
 #define LCD_LAYER_FG 1
 #define LCD_LAYER_BG 0
@@ -15,6 +15,8 @@
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define COUNT(x) (sizeof(x)/sizeof(x[0]))
+
+static int current_layer = LCD_LAYER_FG;
 
 static volatile uint32_t lcd_image_fg[DISPLAY_HEIGHT][DISPLAY_WIDTH] __attribute__((section(".sdram")));
 static volatile uint32_t lcd_image_bg[DISPLAY_HEIGHT][DISPLAY_WIDTH] __attribute__((section(".sdram")));
@@ -65,54 +67,68 @@ static const Point pause_icon_positions[] = {
         {VW_TO_PX(52), VH_TO_PX(80)}
 };
 static const Point pause_icon_points[] = {
-        {0,  0},
-        {5,  0},
-        {5,  30},
-        {0,  30}
+        {0, 0},
+        {5, 0},
+        {5, 30},
+        {0, 30}
 };
 
 // Progress bar
-static const Point progress_bar_center = {(DISPLAY_WIDTH - 20) / 2, 100};
 static const Point progress_bar_boundaries[] = {
-        {0,   0},
-        {400, 0},
-        {400, 5},
-        {0,   5}
+        {10, 150},
+        {DISPLAY_WIDTH - 10, 160}
 };
 
-void load_screen() {
+void initialize_screen() {
     BSP_LCD_Init();
 
     BSP_LCD_LayerDefaultInit(LCD_LAYER_FG, (uint32_t) lcd_image_fg);
     BSP_LCD_LayerDefaultInit(LCD_LAYER_BG, (uint32_t) lcd_image_bg);
 
-    BSP_LCD_DisplayOn();
-
     BSP_LCD_SelectLayer(LCD_LAYER_BG);
-    BSP_LCD_Clear(LCD_COLOR_WHITE);
-    BSP_LCD_SetBackColor(LCD_COLOR_WHITE);
+    BSP_LCD_Clear(LCD_COLOR_BLACK);
 
     BSP_LCD_SelectLayer(LCD_LAYER_FG);
-    BSP_LCD_Clear(LCD_COLOR_TRANSPARENT);
+    BSP_LCD_Clear(LCD_COLOR_BLACK);
 
-    BSP_LCD_SetTransparency(LCD_LAYER_BG, 255);
+    BSP_LCD_SetLayerVisible(current_layer, ENABLE);
+    BSP_LCD_DisplayOn();
 
     BSP_TS_Init(DISPLAY_WIDTH, DISPLAY_HEIGHT);
-
-    draw_polygon(back_icon_center, back_icon_points, COUNT(back_icon_points), LCD_COLOR_WHITE);
-    draw_polygon(next_icon_center, next_icon_points, COUNT(next_icon_points), LCD_COLOR_WHITE);
-
-    draw_circle(play_icon_center, play_icon_radius, LCD_COLOR_WHITE);
-    draw_polygon(play_icon_center, play_icon_points, COUNT(play_icon_points), LCD_COLOR_BLACK);
-
-//    draw_polygon(pause_icon_positions[0], pause_icon_points, COUNT(pause_icon_points), LCD_COLOR_BLACK);
-//    draw_polygon(pause_icon_positions[1], pause_icon_points, COUNT(pause_icon_points), LCD_COLOR_BLACK);
 }
 
-void render_text(char* text) {
-    BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
-    BSP_LCD_SetFont(&Font24);
-    BSP_LCD_DisplayStringAt(100, 100, (uint8_t *) "Hello World!", CENTER_MODE);
+void render_text(const char *text, int x, int y, sFONT *font, uint32_t color, uint32_t background_color,
+                 Text_AlignModeTypdef alignment) {
+    BSP_LCD_SetBackColor(background_color);
+    BSP_LCD_SetTextColor(color);
+
+    BSP_LCD_SetFont(font);
+
+    BSP_LCD_DisplayStringAt(x, y, (uint8_t *) text, alignment);
+}
+
+void render_heading(const char *text, int x, int y, sFONT *font) {
+    render_text(text, x, y, font, LCD_COLOR_WHITE, LCD_COLOR_TRANSPARENT, LEFT_MODE);
+}
+
+void render_h1(const char *text, int x, int y) {
+    render_heading(text, x, y, &Font24);
+}
+
+void render_h2(const char *text, int x, int y) {
+    render_heading(text, x, y, &Font20);
+}
+
+void render_h3(const char *text, int x, int y) {
+    render_heading(text, x, y, &Font16);
+}
+
+void render_h4(const char *text, int x, int y) {
+    render_heading(text, x, y, &Font12);
+}
+
+void render_paragraph(const char *text, int x, int y) {
+    render_heading(text, x, y, &Font8);
 }
 
 void draw_circle(const Point center_position, int radius, uint32_t color) {
@@ -129,7 +145,8 @@ void draw_polygon(const Point center_position, const Point *icon_points, uint16_
     BSP_LCD_FillPolygon(transformed_points, icon_points_count);
 }
 
-void transform_points(const Point center_position, const Point *icon_points, uint16_t points_count, Point *transformed_points) {
+void transform_points(const Point center_position, const Point *icon_points, uint16_t points_count,
+                      Point *transformed_points) {
     BoundingRect bounding_rect = {
             .x1 = icon_points[0].X,
             .y1 = icon_points[0].Y,
@@ -164,4 +181,62 @@ void handle_touch() {
     unsigned last_touch_tick = osKernelSysTick();
     TS_StateTypeDef touch_state;
     BSP_TS_GetState(&touch_state);
+
+
+}
+
+
+void swap_screen_layers() {
+    // Wait for VSYNC
+    while (!(LTDC->CDSR & LTDC_CDSR_VSYNCS));
+
+    current_layer = !current_layer;
+    BSP_LCD_SetLayerVisible(current_layer, ENABLE);
+    BSP_LCD_SetLayerVisible(!current_layer, DISABLE);
+    BSP_LCD_SelectLayer(!current_layer);
+}
+
+void render_info_screen(const char *info, const char *sub_info) {
+    BSP_LCD_Clear(LCD_COLOR_BLACK);
+
+    render_h1(info, VW_TO_PX(10), VH_TO_PX(40));
+    render_h2(sub_info, VW_TO_PX(10), VH_TO_PX(60));
+
+    swap_screen_layers();
+}
+
+void draw_progress_bar(double progress) {
+    // Create the outer rectangle
+    BSP_LCD_SetTextColor(LCD_COLOR_GRAY);
+    BSP_LCD_FillRect(progress_bar_boundaries[0].X, progress_bar_boundaries[0].Y,
+                     progress_bar_boundaries[1].X - progress_bar_boundaries[0].X,
+                     progress_bar_boundaries[1].Y - progress_bar_boundaries[0].Y);
+    // Create the inner rectangle
+    BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
+    BSP_LCD_FillRect(progress_bar_boundaries[0].X + 2, progress_bar_boundaries[0].Y + 2,
+                     (int)(progress * (progress_bar_boundaries[1].X - progress_bar_boundaries[0].X - 4)),
+                     progress_bar_boundaries[1].Y - progress_bar_boundaries[0].Y - 4);
+}
+
+void render_track_screen(const char *track_name, const char *artist_name, int total_files_count, int current_file_index,
+                         double progress, double duration, bool is_playing) {
+    BSP_LCD_Clear(LCD_COLOR_BLACK);
+
+    render_h3(track_name, VW_TO_PX(5), VH_TO_PX(20));
+    render_h4(artist_name, VW_TO_PX(5), VH_TO_PX(30));
+
+    draw_progress_bar(progress);
+
+    draw_polygon(back_icon_center, back_icon_points, COUNT(back_icon_points), LCD_COLOR_WHITE);
+    draw_polygon(next_icon_center, next_icon_points, COUNT(next_icon_points), LCD_COLOR_WHITE);
+
+    if (is_playing) {
+        draw_circle(play_icon_center, play_icon_radius, LCD_COLOR_WHITE);
+        draw_polygon(play_icon_center, play_icon_points, COUNT(play_icon_points), LCD_COLOR_BLACK);
+    } else {
+        draw_polygon(pause_icon_positions[0], pause_icon_points, COUNT(pause_icon_points), LCD_COLOR_BLACK);
+        draw_polygon(pause_icon_positions[1], pause_icon_points, COUNT(pause_icon_points), LCD_COLOR_BLACK);
+    }
+
+    swap_screen_layers();
 }

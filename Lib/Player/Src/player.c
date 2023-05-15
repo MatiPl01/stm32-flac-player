@@ -12,7 +12,7 @@ static uint64_t samples_played = 0;
 static FIL current_audio_file;
 static Flac *flac;
 static FlacReader *flac_reader;
-static FlacMetaData *flac_metadata;
+static FlacMetaData flac_metadata;
 
 void BSP_AUDIO_OUT_HalfTransfer_CallBack(void) {
     audio_buffer_state = BUFFER_OFFSET_HALF;
@@ -52,7 +52,7 @@ void start_player(const char* file_path) {
 
     log_info("Reading FLAC metadata");
     // TODO - handle errors instead of returning from a function
-    if (read_metadata(flac, flac_metadata) == 1) return;
+    if (read_metadata(flac, &flac_metadata) == 1) return;
 
     log_info("Reading FLAC file into buffer");
     // Fill the first half of the buffer
@@ -131,7 +131,7 @@ void update_player(void) {
             }
 
             unsigned bytes_read = read_flac(flac_reader, &audio_buffer[offset], AUDIO_BUFFER_SIZE / 2);
-            samples_played += bytes_read / flac_metadata->channels / (flac_metadata->bits_per_sample / 8);
+            samples_played += bytes_read / flac_metadata.channels / (flac_metadata.bits_per_sample / 8);
 
             if (bytes_read < AUDIO_BUFFER_SIZE / 2) {
                 log_info("Stop at EOF");
@@ -139,4 +139,15 @@ void update_player(void) {
             }
         }
     }
+}
+
+double get_playing_progress(void) {
+    if (flac_metadata.total_samples == 0) {
+        return 0;
+    }
+    double progress = (double) samples_played / flac_metadata.total_samples;
+    if (progress > 1) {
+        progress = 1;
+    }
+    return progress;
 }

@@ -81,6 +81,8 @@ static void decoder_metadata_callback(
 
     Flac *flac = (Flac *) client_data;
 
+    log_error(">>>: %d", metadata->data.stream_info.total_samples);
+
     if (metadata->type == FLAC__METADATA_TYPE_STREAMINFO) {
         flac->metadata = (FlacMetaData) {
                 .total_samples = metadata->data.stream_info.total_samples,
@@ -150,6 +152,7 @@ void destroy_flac(Flac *flac) {
 
 int read_metadata(Flac *flac, FlacMetaData *metadata) {
     if (FLAC__stream_decoder_process_until_end_of_metadata(flac->decoder)) {
+        log_error("read_metadata %d", flac->metadata.total_samples);
         *metadata = flac->metadata;
         return 0;
     } else {
