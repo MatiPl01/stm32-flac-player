@@ -18,21 +18,30 @@ static const char *get_current_file_path(void) {
 }
 
 static void play_next() {
-    if (get_player_state() != STOPPED) {
+    PlayerState prev_state = get_player_state();
+    if (prev_state != STOPPED) {
         stop_player();
     }
 
     current_file_index = (current_file_index + 1) % file_list.count;
+    if (prev_state == PLAYING) {
+        start_player(get_current_file_path());
+    }
     log_debug("Current file index: %d", current_file_index);
 }
 
 static void play_previous() {
-    if (get_player_state() != STOPPED) {
+    PlayerState prev_state = get_player_state();
+    if (prev_state != STOPPED) {
         stop_player();
     }
+
     if (get_playing_progress() <= 0.1) {
         current_file_index = (file_list.count + current_file_index - 1) % file_list.count;
         log_debug("Current file index: %d", current_file_index);
+    }
+    if (prev_state == PLAYING) {
+        start_player(get_current_file_path());
     }
 }
 
@@ -75,11 +84,11 @@ void controller_task(void) {
         handle_touch();
         render_track_screen(track_name, track_author, 3, 0, get_playing_progress(), 182.42, get_player_state() == PLAYING);
         if (is_next_button_active()) {
-            update_track_info();
             play_next();
-        } else if (is_back_button_active()) {
             update_track_info();
+        } else if (is_back_button_active()) {
             play_previous();
+            update_track_info();
         } else if (is_play_button_active()) {
             start();
         } else if (is_pause_button_active()) {
