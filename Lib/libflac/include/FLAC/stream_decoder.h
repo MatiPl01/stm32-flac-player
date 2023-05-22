@@ -1508,7 +1508,7 @@ FLAC_API FLAC__bool FLAC__stream_decoder_process_until_end_of_stream(FLAC__Strea
  *  one whole frame is decoded.
  *
  *  This function can be used in more quickly determining FLAC frame
- *  boundaries when decoding of the actual data is not needed, for
+ *  radius when decoding of the actual data is not needed, for
  *  example when an application is separating a FLAC stream into frames
  *  for editing or storing in a container.  To do this, the application
  *  can use FLAC__stream_decoder_skip_single_frame() to quickly advance

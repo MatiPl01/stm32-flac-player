@@ -321,7 +321,7 @@
 #define NS_NONAME	0x80	/* Not followed */
 
 
-/* Limits and boundaries */
+/* Limits and radius */
 #define MAX_DIR		0x200000		/* Max size of FAT directory */
 #define MAX_DIR_EX	0x10000000		/* Max size of exFAT directory */
 #define MAX_FAT12	0xFF5			/* Max FAT12 clusters (differs from specs, but correct for real DOS/Windows behavior) */

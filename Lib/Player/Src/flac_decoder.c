@@ -1,5 +1,6 @@
 #include <flac_decoder.h>
 #include "term_io.h"
+#include "stm32746g_discovery_lcd.h"
 
 static FLAC__StreamDecoderReadStatus decoder_read_callback(
         const FLAC__StreamDecoder *decoder,
@@ -42,7 +43,6 @@ static FLAC__StreamDecoderWriteStatus decoder_write_callback(
 
     for (int i = 0; i < frame->header.channels; i++) {
         if (buffer[i] == NULL) {
-            log_error("buffer[%d] is NULL\n", i);
             return FLAC__STREAM_DECODER_WRITE_STATUS_ABORT;
         }
     }
@@ -81,14 +81,13 @@ static void decoder_metadata_callback(
 
     Flac *flac = (Flac *) client_data;
 
-    log_error(">>>: %d", metadata->data.stream_info.total_samples);
-
     if (metadata->type == FLAC__METADATA_TYPE_STREAMINFO) {
         flac->metadata = (FlacMetaData) {
                 .total_samples = metadata->data.stream_info.total_samples,
                 .bits_per_sample = metadata->data.stream_info.bits_per_sample,
                 .sample_rate = metadata->data.stream_info.sample_rate,
-                .channels = metadata->data.stream_info.channels
+                .channels = metadata->data.stream_info.channels,
+
         };
 
         log_debug("total_samples: %d", flac->metadata.total_samples);
@@ -152,7 +151,6 @@ void destroy_flac(Flac *flac) {
 
 int read_metadata(Flac *flac, FlacMetaData *metadata) {
     if (FLAC__stream_decoder_process_until_end_of_metadata(flac->decoder)) {
-        log_error("read_metadata %d", flac->metadata.total_samples);
         *metadata = flac->metadata;
         return 0;
     } else {

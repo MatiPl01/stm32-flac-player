@@ -25,5 +25,6 @@ void resume_player(void);
 void stop_player(void);
 void update_player(void);
 double get_playing_progress(void);
+PlayerState get_player_state(void);
 
 #endif //STM32_FLAC_PLAYER_PLAYER_H

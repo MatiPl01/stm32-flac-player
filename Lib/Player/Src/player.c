@@ -58,7 +58,6 @@ void start_player(const char* file_path) {
     // Fill the first half of the buffer
     unsigned bytes_to_read = AUDIO_BUFFER_SIZE / 2;
     unsigned bytes_read = read_flac(flac_reader, audio_buffer, bytes_to_read);
-    log_info(">>>> Read %d bytes", bytes_read); // TODO - remove this line
     if (bytes_read < bytes_to_read) {
         log_info("Reached end of file");
         stop_player();
@@ -150,4 +149,8 @@ double get_playing_progress(void) {
         progress = 1;
     }
     return progress;
+}
+
+PlayerState get_player_state() {
+    return player_state;
 }

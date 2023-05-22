@@ -88,9 +88,9 @@ const uint8_t lcdRegData23[] = {0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x0
 const uint8_t lcdRegData24[] = {0x26,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xCC};
 const uint8_t lcdRegData25[] = {0xFF,0xFF,0xFF,0xFF};    
 /*
-  * CASET value (Column Address Set) : X direction LCD GRAM boundaries
+  * CASET value (Column Address Set) : X direction LCD GRAM radius
   * depending on LCD orientation mode and PASET value (Page Address Set) : Y direction
-  * LCD GRAM boundaries depending on LCD orientation mode
+  * LCD GRAM radius depending on LCD orientation mode
   * XS[15:0] = 0x000 = 0, XE[15:0] = 0x31F = 799 for landscape mode : apply to CASET
   * YS[15:0] = 0x000 = 0, YE[15:0] = 0x31F = 799 for portrait mode : : apply to PASET
   */

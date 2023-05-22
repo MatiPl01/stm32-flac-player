@@ -33,10 +33,10 @@
             @note   Regarding BSP_EEPROM_WritePage(), it is an optimized function to perform
                    small write (less than 1 page) BUT the number of bytes (combined to write start address) must not
                    cross the EEPROM page boundary. This function can only writes into
-                   the boundaries of an EEPROM page.
-                   This function doesn't check on boundaries condition (in this driver 
+                   the radius of an EEPROM page.
+                   This function doesn't check on radius condition (in this driver
                    the function BSP_EEPROM_WriteBuffer() which calls BSP_EEPROM_WritePage() is 
-                   responsible of checking on Page boundaries).
+                   responsible of checking on Page radius).
     
                 
         +-----------------------------------------------------------------+
@@ -224,10 +224,10 @@ uint32_t BSP_EEPROM_ReadBuffer(uint8_t* pBuffer, uint16_t ReadAddr, uint16_t* Nu
   *
   * @note   The number of bytes (combined to write start address) must not 
   *         cross the EEPROM page boundary. This function can only write into
-  *         the boundaries of an EEPROM page.
-  *         This function doesn't check on boundaries condition (in this driver 
+  *         the radius of an EEPROM page.
+  *         This function doesn't check on radius condition (in this driver
   *         the function BSP_EEPROM_WriteBuffer() which calls BSP_EEPROM_WritePage() is 
-  *         responsible of checking on Page boundaries).
+  *         responsible of checking on Page radius).
   * 
   * @param  pBuffer: pointer to the buffer containing the data to be written to 
   *         the EEPROM.

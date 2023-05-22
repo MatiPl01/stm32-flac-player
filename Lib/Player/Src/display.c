@@ -21,56 +21,147 @@ static int current_layer = LCD_LAYER_FG;
 static volatile uint32_t lcd_image_fg[DISPLAY_HEIGHT][DISPLAY_WIDTH] __attribute__((section(".sdram")));
 static volatile uint32_t lcd_image_bg[DISPLAY_HEIGHT][DISPLAY_WIDTH] __attribute__((section(".sdram")));
 
-// Back button
-static const Point back_icon_center = {VW_TO_PX(20), VH_TO_PX(80)};
-static const Point back_icon_points[] = {
+// SHAPES
+// Rectangle
+// create rect using CREATE_SHAPE macro
+static const Point rect_points[] = {
+        {0, 0},
+        {0, 30},
+        {7, 30},
+        {7, 0}
+};
+
+// Triangle
+static const Point triangle_points[] = {
+        {0,  0},
+        {20, 15},
+        {0,  30}
+};
+
+// Chevron
+// Right
+static const Point chevron_right_points[] = {
+        {5,  0},
+        {20, 15},
+        {5,  30},
+        {0,  25},
+        {15, 15},
+        {0,  5}
+
+};
+
+// Left
+static const Point chevron_left_points[] = {
+        {15, 0},
         {0,  15},
-        {20, 0},
-        {20, 30}
+        {15, 30},
+        {20, 25},
+        {5,  15},
+        {20, 5}
+};
+
+// BUTTONS
+// Back button
+static const TranslatedShape chevron_left_icon_shapes[] = {
+        {
+                .shape = {
+                        .points = chevron_left_points,
+                        .points_count = COUNT(chevron_left_points),
+                },
+                .translation = {-2, 0}
+        }
 };
 static Button back_button = {
         .center_position = {VW_TO_PX(20), VH_TO_PX(80)},
-        .boundaries = {30, 30},
-        .is_touched = false
+        .radius = 25,
+        .icon = {
+                .shapes = chevron_left_icon_shapes,
+                .shapes_count = 1,
+        },
+        .last_changed_state = 0,
+        .is_touched = false,
+        .active = false
 };
 
 // Next button
-static const Point next_icon_center = {VW_TO_PX(80), VH_TO_PX(80)};
-static const Point next_icon_points[] = {
-        {0,  0},
-        {20, 15},
-        {0,  30}
+static const TranslatedShape chevron_right_icon_shapes[] = {
+        {
+                .shape = {
+                        .points = chevron_right_points,
+                        .points_count = COUNT(chevron_right_points),
+                },
+                .translation = {2, 0}
+        }
 };
 static Button next_button = {
         .center_position = {VW_TO_PX(80), VH_TO_PX(80)},
-        .boundaries = {30, 30},
-        .is_touched = false
+        .radius = 25,
+        .icon = {
+                .shapes = chevron_right_icon_shapes,
+                .shapes_count = 1,
+        },
+        .last_changed_state = 0,
+        .is_touched = false,
+        .active = false
 };
 
 // Play button
-static const Point play_icon_center = {VW_TO_PX(50), VH_TO_PX(80)};
-static const int play_icon_radius = 40;
-static const Point play_icon_points[] = {
-        {0,  0},
-        {20, 15},
-        {0,  30}
+static const TranslatedShape play_icon_shapes[] = {
+        {
+                .shape = {
+                        .points = triangle_points,
+                        .points_count = COUNT(triangle_points),
+                },
+                .translation = {2, 0}
+        }
 };
 static Button play_button = {
         .center_position = {VW_TO_PX(50), VH_TO_PX(80)},
-        .boundaries = {30, 30},
-        .is_touched = false
+        .radius = 35,
+        .icon = {
+                .shapes = play_icon_shapes,
+                .shapes_count = 1,
+        },
+        .last_changed_state = 0,
+        .is_touched = false,
+        .active = false
 };
 
 // Pause button
-static const Point pause_icon_positions[] = {
-        {VW_TO_PX(48), VH_TO_PX(80)},
-        {VW_TO_PX(52), VH_TO_PX(80)}
+static const TranslatedShape pause_icon_shapes[] = {
+        {
+                .shape = {
+                        .points = rect_points,
+                        .points_count = COUNT(rect_points),
+                },
+                .translation = {-8, 0}
+        },
+        {
+                .shape = {
+                        .points = rect_points,
+                        .points_count = COUNT(rect_points),
+                },
+                .translation = {8, 0}
+        }
 };
-static const Point pause_icon_points[] = {
-        {0, 0},
-        {5, 0},
-        {5, 30},
-        {0, 30}
+static Button pause_button = {
+        .center_position = {VW_TO_PX(50), VH_TO_PX(80)},
+        .radius = 35,
+        .icon = {
+                .shapes = pause_icon_shapes,
+                .shapes_count = 2,
+        },
+        .last_changed_state = 0,
+        .is_touched = false,
+        .active = false
+};
+
+// Buttons
+static Button *buttons[] = {
+        &back_button,
+        &next_button,
+        &play_button,
+        &pause_button
 };
 
 // Progress bar
@@ -80,6 +171,7 @@ static const Point progress_bar_boundaries[] = {
 };
 
 void initialize_screen() {
+    // Initialize screen
     BSP_LCD_Init();
 
     BSP_LCD_LayerDefaultInit(LCD_LAYER_FG, (uint32_t) lcd_image_fg);
@@ -131,20 +223,6 @@ void render_paragraph(const char *text, int x, int y) {
     render_heading(text, x, y, &Font8);
 }
 
-void draw_circle(const Point center_position, int radius, uint32_t color) {
-    BSP_LCD_SetTextColor(color);
-    BSP_LCD_FillCircle(center_position.X, center_position.Y, radius);
-}
-
-void draw_polygon(const Point center_position, const Point *icon_points, uint16_t icon_points_count, uint32_t color) {
-    BSP_LCD_SetTextColor(color);
-
-    Point transformed_points[icon_points_count];
-    transform_points(center_position, icon_points, icon_points_count, transformed_points);
-
-    BSP_LCD_FillPolygon(transformed_points, icon_points_count);
-}
-
 void transform_points(const Point center_position, const Point *icon_points, uint16_t points_count,
                       Point *transformed_points) {
     BoundingRect bounding_rect = {
@@ -171,20 +249,56 @@ void transform_points(const Point center_position, const Point *icon_points, uin
 }
 
 bool is_button_touched(Button button, TS_StateTypeDef touch_state) {
-    return touch_state.touchX[0] > button.center_position.X - button.boundaries.X / 2 &&
-           touch_state.touchX[0] < button.center_position.X + button.boundaries.X / 2 &&
-           touch_state.touchY[0] > button.center_position.Y - button.boundaries.Y / 2 &&
-           touch_state.touchY[0] < button.center_position.Y + button.boundaries.Y / 2;
+    return touch_state.touchX[0] > button.center_position.X - button.radius &&
+           touch_state.touchX[0] < button.center_position.X + button.radius &&
+           touch_state.touchY[0] > button.center_position.Y - button.radius &&
+           touch_state.touchY[0] < button.center_position.Y + button.radius;
 }
 
 void handle_touch() {
-    unsigned last_touch_tick = osKernelSysTick();
+    unsigned current_tick = osKernelSysTick();
     TS_StateTypeDef touch_state;
     BSP_TS_GetState(&touch_state);
 
-
+    for (int i = 0; i < COUNT(buttons); i++) {
+        Button *button = buttons[i];
+        if (button->disabled) continue;
+        bool is_touched = is_button_touched(*button, touch_state);
+        if (is_touched != button->is_touched) {
+            if (current_tick - button->last_changed_state >= 100) {
+                if (!button->is_touched && is_touched) {
+                    button->active = true;
+                }
+                button->is_touched = is_touched;
+            }
+            button->last_changed_state = current_tick;
+        }
+    }
 }
 
+bool is_back_button_active() {
+    bool active = back_button.active;
+    back_button.active = false;
+    return active;
+}
+
+bool is_next_button_active() {
+    bool active = next_button.active;
+    next_button.active = false;
+    return active;
+}
+
+bool is_play_button_active() {
+    bool active = play_button.active;
+    play_button.active = false;
+    return active;
+}
+
+bool is_pause_button_active() {
+    bool active = pause_button.active;
+    pause_button.active = false;
+    return active;
+}
 
 void swap_screen_layers() {
     // Wait for VSYNC
@@ -214,8 +328,50 @@ void draw_progress_bar(double progress) {
     // Create the inner rectangle
     BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
     BSP_LCD_FillRect(progress_bar_boundaries[0].X + 2, progress_bar_boundaries[0].Y + 2,
-                     (int)(progress * (progress_bar_boundaries[1].X - progress_bar_boundaries[0].X - 4)),
+                     (int) (progress * (progress_bar_boundaries[1].X - progress_bar_boundaries[0].X - 4)),
                      progress_bar_boundaries[1].Y - progress_bar_boundaries[0].Y - 4);
+}
+
+void draw_shape(Shape shape, Point position, uint32_t color) {
+    BSP_LCD_SetTextColor(color);
+    // Translate shape points to the target position
+    Point transformed_points[shape.points_count];
+    transform_points(position, shape.points, shape.points_count, transformed_points);
+    // Draw the shape
+    BSP_LCD_FillPolygon(transformed_points, shape.points_count);
+}
+
+void draw_icon(const Icon icon, Point position, uint32_t color) {
+    for (uint16_t i = 0; i < icon.shapes_count; i++) {
+        // Translate shape points to the target position
+        TranslatedShape translated_shape = icon.shapes[i];
+        // Calculate teh resulting absolute shape position based on icon position and translation
+        Point absolute_shape_position = {
+                position.X + translated_shape.translation.X,
+                position.Y + translated_shape.translation.Y
+        };
+        // Draw the shape
+        draw_shape(translated_shape.shape, absolute_shape_position, color);
+    }
+}
+
+void draw_button(const Button button, uint32_t background_color, uint32_t icon_color, uint32_t active_background_color,
+                 uint32_t active_icon_color) {
+    // Draw circular button background with button radius on the target center position
+    // Display the active background color if the time after last active state change is less than 300ms
+    uint32_t bg_color;
+    uint32_t i_color;
+    if (button.active && osKernelSysTick() - button.last_changed_state < 300) {
+        bg_color = active_background_color;
+        i_color = active_icon_color;
+    } else {
+        bg_color = background_color;
+        i_color = icon_color;
+    }
+    BSP_LCD_SetTextColor(bg_color);
+    BSP_LCD_FillEllipse(button.center_position.X, button.center_position.Y, button.radius, button.radius);
+    // Draw button icon
+    draw_icon(button.icon, button.center_position, i_color);
 }
 
 void render_track_screen(const char *track_name, const char *artist_name, int total_files_count, int current_file_index,
@@ -227,15 +383,19 @@ void render_track_screen(const char *track_name, const char *artist_name, int to
 
     draw_progress_bar(progress);
 
-    draw_polygon(back_icon_center, back_icon_points, COUNT(back_icon_points), LCD_COLOR_WHITE);
-    draw_polygon(next_icon_center, next_icon_points, COUNT(next_icon_points), LCD_COLOR_WHITE);
-
+    // Back button
+    draw_button(back_button, LCD_COLOR_GRAY, LCD_COLOR_WHITE, LCD_COLOR_WHITE, LCD_COLOR_BLACK);
+    // Next button
+    draw_button(next_button, LCD_COLOR_GRAY, LCD_COLOR_WHITE, LCD_COLOR_WHITE, LCD_COLOR_BLACK);
+    // Play button
     if (is_playing) {
-        draw_circle(play_icon_center, play_icon_radius, LCD_COLOR_WHITE);
-        draw_polygon(play_icon_center, play_icon_points, COUNT(play_icon_points), LCD_COLOR_BLACK);
+        draw_button(pause_button, LCD_COLOR_WHITE, LCD_COLOR_BLACK, LCD_COLOR_GRAY, LCD_COLOR_WHITE);
+        play_button.disabled = true;
+        pause_button.disabled = false;
     } else {
-        draw_polygon(pause_icon_positions[0], pause_icon_points, COUNT(pause_icon_points), LCD_COLOR_BLACK);
-        draw_polygon(pause_icon_positions[1], pause_icon_points, COUNT(pause_icon_points), LCD_COLOR_BLACK);
+        draw_button(play_button, LCD_COLOR_WHITE, LCD_COLOR_BLACK, LCD_COLOR_GRAY, LCD_COLOR_WHITE);
+        play_button.disabled = false;
+        pause_button.disabled = true;
     }
 
     swap_screen_layers();

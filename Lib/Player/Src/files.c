@@ -37,6 +37,17 @@ int find_FLAC_files(const char *dir_path, FileList *file_list) {
                 }
 
                 log_info("Found file %s", file_info.fname);
+
+//                if(file_info.fname[0] == '0' && file_info.fname[1] == '1' && file_info.fname[5] == 'T') {
+//                    log_info("Deleting file %s", file_info.fname);
+//                    // Delete file from SD card
+//                    if (f_unlink(file_info.fname) != FR_OK) {
+//                        log_error("Failed to delete file %s", file_info.fname);
+//                        return 1;
+//                    }
+//                    continue;
+//                }
+
                 strcpy(file_list->files[file_list->count].path, dir_path);
                 strcat(file_list->files[file_list->count].path, "/");
                 strcat(file_list->files[file_list->count].path, file_info.fname);

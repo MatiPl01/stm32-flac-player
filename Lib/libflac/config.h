@@ -12,7 +12,7 @@
 /* Set FLAC__BYTES_PER_WORD to 8 (4 is the default) */
 #undef ENABLE_64_BIT_WORDS
 
-/* define to align allocated memory on 32-byte boundaries */
+/* define to align allocated memory on 32-byte radius */
 #undef FLAC__ALIGN_MALLOC_DATA
 
 /* define if building for ia32/i386 */

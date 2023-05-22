@@ -11,9 +11,28 @@ typedef struct {
 } BoundingRect;
 
 typedef struct {
+    const Point *points;
+    const uint16_t points_count;
+} Shape;
+
+typedef struct {
+    const Shape shape;
+    const Point translation;
+} TranslatedShape;
+
+typedef struct {
+    const TranslatedShape *shapes;
+    const uint16_t shapes_count;
+} Icon;
+
+typedef struct {
     const Point center_position;
-    const Point boundaries;
+    const uint16_t radius;
+    const Icon icon;
+    unsigned last_changed_state;
     bool is_touched;
+    bool active;
+    bool disabled;
 } Button;
 
 void initialize_screen();
@@ -34,5 +53,10 @@ void render_info_screen(const char *info, const char *sub_info);
 
 void render_track_screen(const char *track_name, const char *artist_name, int total_files_count, int current_file_index,
                          double progress, double duration, bool is_playing);
+
+bool is_back_button_active(void);
+bool is_next_button_active(void);
+bool is_play_button_active(void);
+bool is_pause_button_active(void);
 
 #endif //STM32_FLAC_PLAYER_DISPLAY_H
