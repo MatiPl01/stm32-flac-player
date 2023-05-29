@@ -468,6 +468,7 @@ static void MX_I2C3_Init(void) {
   * @retval None
   */
 static void MX_IWDG_Init(void) {
+    return;
     hiwdg.Instance = IWDG;
     hiwdg.Init.Prescaler = IWDG_PRESCALER_256;
     hiwdg.Init.Window = 4095;
